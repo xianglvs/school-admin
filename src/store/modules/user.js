@@ -1,5 +1,6 @@
 import {
-  login
+  login,
+  getInfo
 } from '@/api/user'
 import {
   getToken,
@@ -11,17 +12,12 @@ import {
 } from '@/router'
 
 const state = {
-  token: getToken(),
-  data: null
+  info: null
 }
 
 const mutations = {
-  SET_TOKEN: (state, token) => {
-    state.token = token
-  },
-  SET_DATA: (state, data) => {
-    console.log(state)
-    state.data = data
+  SET_INFO: (state, info) => {
+    state.info = info
   }
 }
 
@@ -42,8 +38,6 @@ const actions = {
         const {
           data
         } = response
-        commit('SET_TOKEN', data.token)
-        commit('SET_DATA', data)
         setToken(data.token)
         resolve()
       }).catch(error => {
@@ -53,10 +47,23 @@ const actions = {
   },
 
   // get user info
-  getUser({
+  async getInfo({
+    commit,
     state
   }) {
-    return Promise.resolve(state.data)
+    if (state.info) {
+      return Promise.resolve(state.info)
+    }
+    try {
+      const response = await getInfo(getToken())
+      const {
+        data
+      } = response
+      commit('SET_INFO', data)
+      return Promise.resolve(data)
+    } catch (e) {
+      return Promise.reject(e)
+    }
   },
 
   // user logout

@@ -22,3 +22,13 @@ export async function login(data) {
     return Promise.reject(e)
   }
 }
+
+export async function getInfo(token) {
+  return request({
+    url: '/api/user/info',
+    method: 'get',
+    params: {
+      token
+    }
+  })
+}

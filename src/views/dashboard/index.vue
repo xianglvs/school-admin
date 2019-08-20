@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard-container">
-    <div class="dashboard-text">name: {{ this.$store.state.user}}</div>
+    <div class="dashboard-text">name: {{ user}}</div>
     <!-- <div class="dashboard-text">roles: <span v-for="role in user.data.roles" :key="role">{{ role }}</span></div> -->
   </div>
 </template>
