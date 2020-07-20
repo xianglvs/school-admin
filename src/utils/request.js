@@ -35,7 +35,7 @@ service.interceptors.response.use(
   /**
    * If you want to get http information such as headers or status
    * Please return  response => response
-  */
+   */
 
   /**
    * Determine the request status by custom code
@@ -63,7 +63,7 @@ service.interceptors.response.use(
           cancelButtonText: '放弃',
           type: 'warning'
         }).then(() => {
-          store.dispatch('user/resetToken').then(() => {
+          store.dispatch('user/logout').then(() => {
             location.reload()
           })
         })
@@ -74,8 +74,7 @@ service.interceptors.response.use(
         dangerouslyUseHTMLString: true,
         duration: 5 * 1000
       })
-
-      return Promise.reject(new Error(res.message || 'Error'))
+      return Promise.reject(new Error(res || 'ERROR'))
     } else {
       return res
     }
