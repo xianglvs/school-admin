@@ -9,7 +9,7 @@
       <el-form-item prop="username">
         <span class="svg-container">
           <svg-icon icon-class="user" />
-        </span>
+                      </span>
         <el-input
           ref="username"
           v-model="loginForm.username"

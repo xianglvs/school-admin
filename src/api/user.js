@@ -23,19 +23,12 @@ export async function login(data) {
   }
 }
 
-export function getInfo(token) {
+export async function getInfo(token) {
   return request({
     url: '/api/user/info',
     method: 'get',
     params: {
       token
     }
-  })
-}
-
-export function logout() {
-  return request({
-    url: '/api/user/logout',
-    method: 'post'
   })
 }
