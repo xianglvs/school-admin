@@ -50,10 +50,10 @@ export const constantRoutes = [
     children: [
       {
         path: 'dashboard',
-        name: 'Dashboard',
+        name: 'dashboard',
         component: () => import('@/views/dashboard/index'),
         meta: {
-          title: 'Dashboard',
+          title: '管理后台',
           icon: 'dashboard'
         }
       }
@@ -70,9 +70,9 @@ export const asyncRoutes = [
     path: '/nested',
     component: Layout,
     redirect: '/nested/menu1',
-    name: 'Nested',
+    name: 'nested',
     meta: {
-      title: '测试一下',
+      title: 'nested',
       icon: 'nested'
     },
     children: [
