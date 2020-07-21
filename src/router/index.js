@@ -102,7 +102,7 @@ export const asyncRoutes = [
     redirect: '/nested/menu1',
     name: 'Nested',
     meta: {
-      title: 'Nested',
+      title: '测试一下',
       icon: 'nested'
     },
     children: [
