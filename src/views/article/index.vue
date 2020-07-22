@@ -16,10 +16,10 @@
               <el-table-column label="操作" width="150">
                 <template slot-scope="scope">
                 	<el-tooltip class="item" effect="dark" content="编辑" placement="top">
-                  	<a  size="small" @click="showEditDialog(scope.$index,scope.row)" class="edit" >编辑</a>
+                    <el-button size="mini"  @click="showEditDialog(scope.$index, scope.row)">编辑</el-button>
                  	</el-tooltip>
                  	<el-tooltip class="item" effect="dark" content="删除" placement="top">
-                  	<a  type="danger" @click="del(scope.$index,scope.row)" class="delete">删除</a>
+                     <el-button size="mini" type="danger"  @click="del(scope.$index, scope.row)">删除</el-button>
                 	</el-tooltip>
                 </template>
               </el-table-column>
@@ -33,43 +33,21 @@
               </el-pagination>
     </el-col>
     <div style="width:100%;height:100%;position:absolute;z-index: 50;background-color:#ffffff;top:0;left:0" v-show="tanKuang" ref="tanKuang">
-      <el-col :span="24" class="warp-main">
-        <el-form   ref="ruleForm" label-width="100px" class="demo-ruleForm ">
-
-          <el-form-item  label="标题：" prop="title" >
-            <el-input  v-model="ruleForm.title"></el-input>
-          </el-form-item>
-          <el-form-item  label="描述：" prop="description" >
-            <el-input  v-model="ruleForm.description"></el-input>
-          </el-form-item>
-         
-          <el-form-item>
-            <el-button type="primary">保存</el-button>
-            <el-button @click="resetForm">返回</el-button>
-          </el-form-item>
-
-        </el-form>
-
-      </el-col>
+     <articleEdit :rowRecord="ruleForm" @resetForm="resetForm"></articleEdit>
 
     </div>
   </div>
 </template>
 
+
 <script>
+import  articleEdit from '@/views/article/edit'
 import { getList } from '@/api/article'
 
+
 export default {
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'gray',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    }
-  },
+  name: 'article-list',
+  components: {articleEdit },
   data() {
     return {
       list: null,
@@ -105,23 +83,14 @@ export default {
     //显示编辑界面
       showEditDialog: function (index,row) {
 				this.tanKuang=true;
-        console.log(Object.assign({}, row))
         this.ruleForm = Object.assign({}, row);
-        this.$refs.tanKuang.setAttribute("class", "edit");
       },
        //显示添加页面
       showAddDialog: function () {
         this.tanKuang=true;
-				this.$refs.tanKuang.setAttribute("id", "add");
-      },
-       clearRuleForm(){
-        this.$refs['ruleForm'].resetFields();
-        this.ruleForm.title='';
-        this.ruleForm.description='';
       },
       resetForm() {
         this.tanKuang = false;
-        this.clearRuleForm();
       },
       handleCurrentChange(val) {
         this.page = val;
