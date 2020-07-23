@@ -9,18 +9,14 @@
                 <el-button type="primary" @click="showAddDialog()">添加</el-button>
           </el-form-item>
     </el-form>
-    <el-table :data="list" highlight-current-row  style="width: 100%;">
+    <el-table :data="list" highlight-current-row  style="width: 100%;" v-loading='listLoading'>
 							<el-table-column prop="title" label="标题" min-width="150"></el-table-column>
               <el-table-column prop="description" label="描述" min-width="200"></el-table-column>
               <el-table-column prop="createDate" label="添加时间" width="200"></el-table-column>
               <el-table-column label="操作" width="150">
                 <template slot-scope="scope">
-                	<el-tooltip class="item" effect="dark" content="编辑" placement="top">
                     <el-button size="mini"  @click="showEditDialog(scope.$index, scope.row)">编辑</el-button>
-                 	</el-tooltip>
-                 	<el-tooltip class="item" effect="dark" content="删除" placement="top">
                      <el-button size="mini" type="danger"  @click="del(scope.$index, scope.row)">删除</el-button>
-                	</el-tooltip>
                 </template>
               </el-table-column>
     </el-table>
@@ -50,7 +46,7 @@ export default {
   data() {
     return {
       list: null,
-      listLoading: true,
+      listLoading: false,
       tanKuang:false,
       ruleDialog:false,
       total:0,
