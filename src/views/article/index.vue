@@ -1,12 +1,12 @@
 <template>
   <div class="app-container" style="position: relative;">
-    <el-form :inline="true">
+    <el-form :inline="true"  :model="filters">
           <el-form-item>
-                文章标题：<el-input placeholder="文章标题" style="width:200px;margin-right:10px;"></el-input>
+                文章标题：<el-input placeholder="文章标题" v-model="filters.title" style="width:200px;margin-right:10px;"></el-input>
           </el-form-item>
           <el-form-item>
-                <el-button ><i class="iconfont">&#xe60e;</i>快速查找</el-button>
-                <el-button type="primary" @click="showAddDialog()"><i class="iconfont" style="margin-right:3px;">&#xe6ff;</i>添加</el-button>
+                <el-button @click="search()">快速查找</el-button>
+                <el-button type="primary" @click="showAddDialog()">添加</el-button>
           </el-form-item>
     </el-form>
     <el-table :data="list" highlight-current-row  style="width: 100%;">
@@ -24,17 +24,16 @@
                 </template>
               </el-table-column>
     </el-table>
-    <el-col :span="24"  class="toolbar" >
-              <el-pagination class="page" style="float:right;margin-bottom:20px"
+    <el-col :span="24"  >
+              <el-pagination class="page" style="float:right;margin:20px 0"
                              @current-change="handleCurrentChange"
                              :page-size="10"
-                             layout="prev, pager, next, jumper"
+                             layout="prev, pager, next, total"
                              :total="total">
               </el-pagination>
     </el-col>
-    <div style="width:100%;height:100%;position:absolute;z-index: 50;background-color:#ffffff;top:0;left:0" v-show="tanKuang" ref="tanKuang">
-     <articleEdit :rowRecord="ruleForm" @resetForm="resetForm"></articleEdit>
-
+    <div style="width:100%;height:100%;position:absolute;z-index: 50;background-color:#ffffff;top:20px;left:20px" v-show="tanKuang" ref="tanKuang">
+     <article-edit :rowRecord="ruleForm" @resetForm="resetForm" @reLoadForm="reLoadForm"></article-edit>
     </div>
   </div>
 </template>
@@ -42,7 +41,7 @@
 
 <script>
 import  articleEdit from '@/views/article/edit'
-import { getList } from '@/api/article'
+import { getList,delArticle } from '@/api/article'
 
 
 export default {
@@ -56,10 +55,10 @@ export default {
       ruleDialog:false,
       total:0,
       page:1,
-      ruleForm: {
-          id:'',
-          title:'',
-        },
+      ruleForm: {},
+      filters: {
+        title: '',
+      },
     }
   },
   created() {
@@ -67,10 +66,12 @@ export default {
   },
   methods: {
     fetchData() {
-      let params = {
-          pageNum: this.page,
-          pageSize: 10,
-        };
+      let params={}
+      params.pageNum= this.page,
+      params.pageSize= 10;
+      if(this.filters.title){
+        params.title=this.filters.title;
+      }
       this.listLoading = true
       getList(params).then(response => {
         if(response.code==0){
@@ -80,22 +81,49 @@ export default {
         this.listLoading = false
       })
     },
-    //显示编辑界面
       showEditDialog: function (index,row) {
 				this.tanKuang=true;
         this.ruleForm = Object.assign({}, row);
       },
-       //显示添加页面
       showAddDialog: function () {
         this.tanKuang=true;
+        this.ruleForm = {delFlag:false,sort:0};
       },
       resetForm() {
         this.tanKuang = false;
+      },
+      reLoadForm() {
+        this.tanKuang = false;
+        this.fetchData();
       },
       handleCurrentChange(val) {
         this.page = val;
         this.fetchData();
       },
+      del(index,row){
+        this.$confirm('此操作将永久删除该文章, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+              delArticle({id:row.id}).then(response => {
+                  if(response.code==0){
+                    this.$message({
+                      message: '删除成功',
+                      center: true,
+                      type: 'success'
+                    });
+                    this.page=1;
+                    this.fetchData();
+                  }
+              })
+        })
+
+      },
+      search(){
+        this.page = 1;
+        this.fetchData();
+      }
       
   }
 }
