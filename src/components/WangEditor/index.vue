@@ -1,9 +1,7 @@
 <template lang="html">
   <div class="editor">
-    <div ref="toolbar" class="toolbar">
-    </div>
-    <div ref="editor" class="text">
-    </div>
+    <div ref="toolbar" class="toolbar" />
+    <div ref="editor" class="text" />
   </div>
 </template>
 
@@ -12,14 +10,7 @@ import E from "wangeditor";
 import { getToken } from "@/utils/auth";
 
 export default {
-  name: "editoritem",
-  data() {
-    return {
-      // uploadPath,
-      editor: null,
-      info_: null
-    };
-  },
+  name: "Editoritem",
   model: {
     prop: "value",
     event: "change"
@@ -34,6 +25,13 @@ export default {
       default: false
     }
   },
+  data() {
+    return {
+      // uploadPath,
+      editor: null,
+      info_: null
+    };
+  },
   watch: {
     isClear(val) {
       // 触发清除文本域内容
@@ -47,7 +45,7 @@ export default {
         this.editor.txt.html(this.value);
       }
     }
-    //value为编辑框输入的内容，这里我监听了一下值，当父组件调用得时候，如果给value赋值了，子组件将会显示父组件赋给的值
+    // value为编辑框输入的内容，这里我监听了一下值，当父组件调用得时候，如果给value赋值了，子组件将会显示父组件赋给的值
   },
   mounted() {
     this.seteditor();
@@ -80,14 +78,14 @@ export default {
         "link", // 插入链接
         // 'list', // 列表
         "justify", // 对齐方式
-        //'quote', // 引用
+        // 'quote', // 引用
         // 'emoticon', // 表情
         "image" // 插入图片
-        //'table', // 表格
-        //'video', // 插入视频
+        // 'table', // 表格
+        // 'video', // 插入视频
         // 'code', // 插入代码
         // 'undo', // 撤销
-        //'redo', // 重复
+        // 'redo', // 重复
         // 'fullscreen' // 全屏
       ];
 
@@ -109,7 +107,7 @@ export default {
         },
         customInsert: (insertImg, result, editor) => {
           if (result.code == 0) {
-            let url = "http://120.78.133.215" + result.data.path;
+            const url = "http://120.78.133.215" + result.data.path;
             insertImg(url);
           }
         }

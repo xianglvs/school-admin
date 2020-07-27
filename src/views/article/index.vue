@@ -3,21 +3,41 @@
     <el-form :inline="true" :model="filters">
       <el-form-item>
         文章标题：
-        <el-input placeholder="文章标题" v-model="filters.title" style="width:200px;margin-right:10px;"></el-input>
+        <el-input
+          v-model="filters.title"
+          placeholder="文章标题"
+          style="width:200px;margin-right:10px;"
+        />
       </el-form-item>
       <el-form-item>
         <el-button @click="search()">快速查找</el-button>
         <el-button type="primary" @click="showAddDialog()">添加</el-button>
       </el-form-item>
     </el-form>
-    <el-table :data="list" highlight-current-row style="width: 100%;" v-loading="listLoading">
-      <el-table-column prop="title" label="标题" min-width="150"></el-table-column>
-      <el-table-column prop="description" label="描述" min-width="200"></el-table-column>
-      <el-table-column prop="createDate" label="添加时间" width="200"></el-table-column>
+    <el-table
+      v-loading="listLoading"
+      :data="list"
+      highlight-current-row
+      style="width: 100%;"
+    >
+      <el-table-column prop="title" label="标题" min-width="150" />
+      <el-table-column prop="description" label="描述" min-width="200" />
+      <el-table-column prop="createDate" label="添加时间" width="200" />
       <el-table-column label="操作" width="150">
         <template slot-scope="scope">
-          <el-button size="mini" @click="showEditDialog(scope.$index, scope.row)">编辑</el-button>
-          <el-button size="mini" type="danger" @click="del(scope.$index, scope.row)">删除</el-button>
+          <el-button
+            size="mini"
+            @click="showEditDialog(scope.$index, scope.row)"
+          >
+            编辑
+          </el-button>
+          <el-button
+            size="mini"
+            type="danger"
+            @click="del(scope.$index, scope.row)"
+          >
+            删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -25,30 +45,33 @@
       <el-pagination
         class="page"
         style="float:right;margin:20px 0"
-        @current-change="handleCurrentChange"
         :page-size="pageSize"
         :current-page="page"
         layout="prev, pager, next, total"
         :total="total"
-      ></el-pagination>
+        @current-change="handleCurrentChange"
+      />
     </el-col>
     <div
-      style="position:absolute;z-index: 50;background-color:#ffffff;top:20px;left:0;width:100%;height:100%;overflow:auto;"
       v-show="tanKuang"
       ref="tanKuang"
+      style="position:absolute;z-index: 50;background-color:#ffffff;top:20px;left:0;width:100%;height:100%;overflow:auto;"
     >
-      <article-edit :rowRecord="ruleForm" @resetForm="resetForm" @reLoadForm="reLoadForm"></article-edit>
+      <article-edit
+        :row-record="ruleForm"
+        @resetForm="resetForm"
+        @reLoadForm="reLoadForm"
+      />
     </div>
   </div>
 </template>
-
 
 <script>
 import articleEdit from "@/views/article/edit";
 import { getList, delArticle } from "@/api/article";
 
 export default {
-  name: "article-list",
+  name: "ArticleList",
   components: { articleEdit },
   data() {
     return {
@@ -69,8 +92,9 @@ export default {
   },
   methods: {
     fetchData() {
-      let params = {};
-      (params.pageNum = this.page), (params.pageSize = this.pageSize);
+      const params = {};
+      params.pageNum = this.page;
+      params.pageSize = this.pageSize;
       if (this.filters.title) {
         params.title = this.filters.title;
       }
@@ -111,20 +135,20 @@ export default {
         delArticle({ id: row.id }).then(response => {
           if (response.code === 0) {
             this.$message({
-              message: '删除成功',
+              message: "删除成功",
               center: true,
-              type: 'success'
-            })
-            this.page = 1
-            this.fetchData()
+              type: "success"
+            });
+            this.page = 1;
+            this.fetchData();
           }
-        })
-      })
+        });
+      });
     },
     search() {
-      this.page = 1
-      this.fetchData()
+      this.page = 1;
+      this.fetchData();
     }
   }
-}
+};
 </script>
