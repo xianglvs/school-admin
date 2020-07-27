@@ -1,5 +1,5 @@
 <template>
-<el-form   ref="rowRecord"  label-width="100px" :rules="rules" :model="rowRecord" style="max-width:500px;overflow:auto;">
+<el-form   ref="rowRecord"  label-width="100px" :rules="rules" :model="rowRecord" style="max-width:520px;overflow:auto;">
           <el-form-item  label="标题：" prop="title" >
             <el-input  v-model="rowRecord.title"></el-input>
           </el-form-item>
