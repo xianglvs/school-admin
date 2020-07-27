@@ -8,7 +8,9 @@
 </template>
 
 <script>
-  import E from 'wangeditor'
+  import E from 'wangeditor';
+  import { getToken } from '@/utils/auth'
+
   export default {
     name: 'editoritem',
     data() {
@@ -53,15 +55,14 @@
     },
     methods: {
       seteditor() {
-        // http://192.168.2.125:8080/admin/storage/create
         this.editor = new E(this.$refs.toolbar, this.$refs.editor)
         this.editor.customConfig.showLinkImg = false;
         this.editor.customConfig.uploadImgShowBase64 = false // base 64 存储图片
-        this.editor.customConfig.uploadImgServer = 'http://otp.cdinfotech.top/file/upload_images'// 配置服务器端地址
-        this.editor.customConfig.uploadImgHeaders = { }// 自定义 header
+        this.editor.customConfig.uploadImgServer = 'http://120.78.133.215:9998/api/file/upload'// 配置服务器端地址
+        this.editor.customConfig.uploadImgHeaders = { 'token':getToken()}// 自定义 header
         this.editor.customConfig.uploadFileName = 'file' // 后端接受上传文件的参数名
         this.editor.customConfig.uploadImgMaxSize = 2 * 1024 * 1024 // 将图片大小限制为 2M
-        this.editor.customConfig.uploadImgMaxLength = 6 // 限制一次最多上传 3 张图片
+        this.editor.customConfig.uploadImgMaxLength = 1 // 限制一次最多上传 3 张图片
         this.editor.customConfig.uploadImgTimeout = 3 * 60 * 1000 // 设置超时时间
 
         // 配置菜单
@@ -95,7 +96,6 @@
             // 插入图片失败回调
           },
           success: (xhr, editor, result) => {
-            console.log(result)
             // 图片上传成功回调
           },
           timeout: (xhr, editor) => {
@@ -107,17 +107,11 @@
             // 图片上传错误的回调
           },
           customInsert: (insertImg, result, editor) => {
-            console.log(result)
-            // 图片上传成功，插入图片的回调
-            //result为上传图片成功的时候返回的数据，这里我打印了一下发现后台返回的是data：[{url:"路径的形式"},...]
-            // console.log(result.data[0].url)
-            //insertImg()为插入图片的函数
-             //循环插入图片
-            // for (let i = 0; i < 1; i++) {
-              // console.log(result)
-              let url = "http://otp.cdinfotech.top"+result.url
-              insertImg(url)
-            // }
+            if(result.code==0){
+                let url = "http://120.78.133.215"+result.data.path;
+                 insertImg(url)
+            }
+           
           }
         }
         this.editor.customConfig.onchange = (html) => {

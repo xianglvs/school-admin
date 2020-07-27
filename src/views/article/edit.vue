@@ -1,6 +1,5 @@
 <template>
-<el-form   ref="rowRecord" label-width="80px" :rules="rules" :model="rowRecord" >
-      <el-col :span="8" style="margin-right:100px" >
+<el-form   ref="rowRecord"  label-width="100px" :rules="rules" :model="rowRecord" style="max-width:500px;overflow:auto;">
           <el-form-item  label="标题：" prop="title" >
             <el-input  v-model="rowRecord.title"></el-input>
           </el-form-item>
@@ -16,17 +15,13 @@
               <el-radio :label="true" >禁用</el-radio>
             </el-radio-group>
           </el-form-item>
-           <el-form-item>
-                <el-button type="primary" @click="submitForm('rowRecord')">保存</el-button>
-                <el-button @click="resetForm">返回</el-button>
-        </el-form-item>
-      </el-col>
-      <el-col :span="8" >
-      <el-form-item  label="内容：" prop="content" >
+          <el-form-item  label="内容：" prop="content" >
             <wang-editor v-model="rowRecord.content" :isClear="isClear" @change="change" style='width:414px;'></wang-editor>
           </el-form-item>
-      </el-col>
-      
+          <el-form-item>
+                    <el-button type="primary" @click="submitForm('rowRecord')">保存</el-button>
+                    <el-button @click="resetForm">返回</el-button>
+            </el-form-item>
     </el-form>
 </template>
 

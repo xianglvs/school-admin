@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container" style="position: relative;">
+  <div class="app-container" style="position: absolute;width:100%;height:100%">
     <el-form :inline="true"  :model="filters">
           <el-form-item>
                 文章标题：<el-input placeholder="文章标题" v-model="filters.title" style="width:200px;margin-right:10px;"></el-input>
@@ -23,12 +23,13 @@
     <el-col :span="24"  >
               <el-pagination class="page" style="float:right;margin:20px 0"
                              @current-change="handleCurrentChange"
-                             :page-size="10"
+                             :page-size="pageSize"
+                             :current-page='page'
                              layout="prev, pager, next, total"
                              :total="total">
               </el-pagination>
     </el-col>
-    <div style="width:100%;height:100%;position:absolute;z-index: 50;background-color:#ffffff;top:20px;left:20px" v-show="tanKuang" ref="tanKuang">
+    <div style="position:absolute;z-index: 50;background-color:#ffffff;top:20px;left:0;width:100%;height:100%;overflow:auto;" v-show="tanKuang" ref="tanKuang">
      <article-edit :rowRecord="ruleForm" @resetForm="resetForm" @reLoadForm="reLoadForm"></article-edit>
     </div>
   </div>
@@ -48,9 +49,9 @@ export default {
       list: null,
       listLoading: false,
       tanKuang:false,
-      ruleDialog:false,
       total:0,
       page:1,
+      pageSize:10,
       ruleForm: {},
       filters: {
         title: '',
@@ -64,7 +65,7 @@ export default {
     fetchData() {
       let params={}
       params.pageNum= this.page,
-      params.pageSize= 10;
+      params.pageSize= this.pageSize;
       if(this.filters.title){
         params.title=this.filters.title;
       }
