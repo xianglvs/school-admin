@@ -1,14 +1,14 @@
-import axios from 'axios'
-import { MessageBox, Message } from 'element-ui'
-import store from '@/store'
-import { getToken } from '@/utils/auth'
+import axios from "axios";
+import { MessageBox, Message } from "element-ui";
+import store from "@/store";
+import { getToken } from "@/utils/auth";
 
 // create an axios instance
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
   timeout: 5000 // request timeout
-})
+});
 
 // request interceptor
 service.interceptors.request.use(
@@ -19,16 +19,16 @@ service.interceptors.request.use(
       // let each request carry token
       // ['X-Token'] is a custom headers key
       // please modify it according to the actual situation
-      config.headers['X-Token'] = getToken()
+      config.headers["X-Token"] = getToken();
     }
-    return config
+    return config;
   },
   error => {
     // do something with request error
-    console.log(error) // for debug
-    return Promise.reject(error)
+    console.log(error); // for debug
+    return Promise.reject(error);
   }
-)
+);
 
 // response interceptor
 service.interceptors.response.use(
@@ -43,51 +43,51 @@ service.interceptors.response.use(
    * You can also judge the status by HTTP Status Code
    */
   response => {
-    const res = response.data
+    const res = response.data;
 
     // if the custom code is not 20000, it is judged as an error.
     if (res.code !== 0) {
-      const messages = res.messages
-      let message = res.message
+      const messages = res.messages;
+      let message = res.message;
       if (messages) {
-        message = ''
+        message = "";
         messages.reverse().forEach(element => {
-          message += '<p>' + element.error + '</p>'
-        })
+          message += "<p>" + element.error + "</p>";
+        });
       }
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
       if (res.code === 401000) {
         // to re-login
-        MessageBox.confirm('你登录已失效,是否留在当前页面?', '确认登出', {
-          confirmButtonText: '重新登录',
-          cancelButtonText: '放弃',
-          type: 'warning'
+        MessageBox.confirm("你登录已失效,是否留在当前页面?", "确认登出", {
+          confirmButtonText: "重新登录",
+          cancelButtonText: "放弃",
+          type: "warning"
         }).then(() => {
-          store.dispatch('user/logout').then(() => {
-            location.reload()
-          })
-        })
+          store.dispatch("user/logout").then(() => {
+            location.reload();
+          });
+        });
       }
       Message({
-        message: message || 'Error',
-        type: 'error',
+        message: message || "Error",
+        type: "error",
         dangerouslyUseHTMLString: true,
         duration: 5 * 1000
-      })
-      return Promise.reject(new Error(res || 'ERROR'))
+      });
+      return Promise.reject(new Error(res || "ERROR"));
     } else {
-      return res
+      return res;
     }
   },
   error => {
-    console.error(error) // for debug
+    console.error(error); // for debug
     Message({
       message: error.message,
-      type: 'error',
+      type: "error",
       duration: 5 * 1000
-    })
-    return Promise.reject(error)
+    });
+    return Promise.reject(error);
   }
-)
+);
 
-export default service
+export default service;

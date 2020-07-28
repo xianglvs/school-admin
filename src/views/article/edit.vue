@@ -4,7 +4,7 @@
     label-width="100px"
     :rules="rules"
     :model="rowRecord"
-    style="max-width:520px;overflow:auto;"
+    style="max-width:520px;overflow:auto;padding-right:50px"
   >
     <el-form-item label="标题：" prop="title">
       <el-input v-model="rowRecord.title" />
@@ -17,11 +17,7 @@
       />
     </el-form-item>
     <el-form-item label="排序：" prop="sort">
-      <el-input-number
-        v-model="rowRecord"
-        :min="0"
-        :max="10000"
-      />
+      <el-input-number v-model="rowRecord" :min="0" :max="10000" />
     </el-form-item>
     <el-form-item label="状态：" prop="delFlag">
       <el-radio-group v-model="rowRecord.delFlag">
@@ -33,15 +29,13 @@
       <wang-editor
         v-model="rowRecord.content"
         :is-clear="isClear"
-        style="width:414px;"
         @change="change"
       />
     </el-form-item>
     <el-form-item>
-      <el-button
-        type="primary"
-        @click="submitForm('rowRecord')"
-      >保存</el-button>
+      <el-button type="primary" @click="submitForm('rowRecord')">
+        保存
+      </el-button>
       <el-button @click="resetForm">返回</el-button>
     </el-form-item>
   </el-form>
