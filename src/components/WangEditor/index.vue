@@ -149,10 +149,6 @@ export default {
       // 创建富文本编辑器
       this.editor.create();
       this.editor.fullscreen.init();
-      const menuNodes = document.querySelectorAll(".w-e-menu");
-      for (let i = 0; i < menuNodes.length; i++) {
-        menuNodes[i].style.zIndex = menuNodes.length - i + 100000;
-      }
     }
   }
 };
