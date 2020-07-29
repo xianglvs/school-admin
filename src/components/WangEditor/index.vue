@@ -198,4 +198,19 @@ export default {
 	width: 100% !important;
 	height: 95% !important;
 }
+
+.w-e-text{
+  font-size: 38px;
+}
+
+.w-e-text h1,h2,h3,h4,h5,h6{
+  margin: 0.1em 0;
+}
+
+.w-e-text img{
+  width: 100%;
+}
+.w-e-text p{
+  font-size:0.5em;
+}
 </style>

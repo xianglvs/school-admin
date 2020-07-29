@@ -4,7 +4,7 @@
     label-width="100px"
     :rules="rules"
     :model="rowRecord"
-    style="max-width:520px;overflow:auto;padding-right:50px"
+    style="max-width:530px;overflow:auto;padding-right:50px"
   >
     <el-form-item label="标题：" prop="title">
       <el-input v-model="rowRecord.title" />
@@ -56,7 +56,7 @@ export default {
       isClear: false,
       rules: {
         title: [{ required: true, message: "不能为空", trigger: "blur" }],
-        description: [{ required: true, message: "不能为空", trigger: "blur" }],
+        // description: [{ required: false, message: "不能为空", trigger: "blur" }],
         sort: [{ required: true, message: "不能为空", trigger: "blur" }],
         delFlag: [{ required: true, message: "不能为空", trigger: "blur" }],
         content: [{ required: true, message: "不能为空", trigger: "blur" }]
