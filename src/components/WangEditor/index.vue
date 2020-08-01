@@ -58,7 +58,7 @@ export default {
       this.editor.customConfig.showLinkImg = false;
       this.editor.customConfig.uploadImgShowBase64 = false; // base 64 存储图片
       this.editor.customConfig.uploadImgServer =
-        "http://120.78.133.215:9998/api/file/upload"; // 配置服务器端地址
+        process.env.VUE_APP_BASE_API + "/api/file/upload"; // 配置服务器端地址
       this.editor.customConfig.uploadImgHeaders = { token: getToken() }; // 自定义 header
       this.editor.customConfig.uploadFileName = "file"; // 后端接受上传文件的参数名
       this.editor.customConfig.uploadImgMaxSize = 30 * 1024 * 1024; // 将图片大小限制为 30M
@@ -113,9 +113,10 @@ export default {
         "image", // 插入图片
         "table", // 表格
         "video", // 插入视频
-        // "code", // 插入代码
+        "code", // 插入代码
         "undo", // 撤销
         "redo", // 重复
+        "clean", // 清除样式
         "fullscreen" // 全屏
       ];
 
@@ -137,7 +138,7 @@ export default {
         },
         customInsert: (insertImg, result, editor) => {
           if (result.code == 0) {
-            const url = "http://120.78.133.215" + result.data.path;
+            const url = process.env.VUE_APP_BASE_API + result.data.path;
             insertImg(url);
           }
         }

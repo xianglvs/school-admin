@@ -17,7 +17,7 @@
       />
     </el-form-item>
     <el-form-item label="排序：" prop="sort">
-      <el-input-number v-model="rowRecord" :min="0" :max="10000" />
+      <el-input-number v-model="rowRecord.sort" :min="0" :max="10000" />
     </el-form-item>
     <el-form-item label="状态：" prop="delFlag">
       <el-radio-group v-model="rowRecord.delFlag">
@@ -25,10 +25,16 @@
         <el-radio :label="true">禁用</el-radio>
       </el-radio-group>
     </el-form-item>
-    <el-form-item label="内容：" prop="content">
+    <!-- <el-form-item label="内容：" prop="content">
       <wang-editor
         v-model="rowRecord.content"
         :is-clear="isClear"
+        @change="change"
+      />
+    </el-form-item> -->
+    <el-form-item label="内容：" prop="content">
+      <quill-editor
+        v-model="rowRecord.content"
         @change="change"
       />
     </el-form-item>
@@ -42,12 +48,13 @@
 </template>
 
 <script>
-import WangEditor from "@/components/WangEditor";
+// import WangEditor from "@/components/WangEditor";
+import QuillEditor from "@/components/Quill";
 import { updateArticle, addArticle } from "@/api/article";
 
 export default {
   name: "ArticleEdit",
-  components: { WangEditor },
+  components: { QuillEditor },
   props: {
     rowRecord: {}
   },
