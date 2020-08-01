@@ -1,20 +1,25 @@
 <template>
   <section class="app-main">
     <transition name="fade-transform" mode="out-in">
-      <router-view :key="key" />
+      <div>
+        <keep-alive>
+          <router-view v-if="$route.meta.keepAlive" :key="key" />
+        </keep-alive>
+        <router-view v-if="!$route.meta.keepAlive" :key="key" />
+      </div>
     </transition>
   </section>
 </template>
 
 <script>
 export default {
-  name: 'AppMain',
+  name: "AppMain",
   computed: {
     key() {
-      return this.$route.path
+      return this.$route.path;
     }
   }
-}
+};
 </script>
 
 <style scoped>

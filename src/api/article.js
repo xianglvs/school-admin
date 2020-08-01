@@ -1,34 +1,38 @@
-import request from '@/utils/request'
+import request from "@/utils/request";
 
 export function getList(params) {
   return request({
-    url: '/api/article/list',
-    method: 'get',
+    url: "/api/article/list",
+    method: "get",
     params
-  })
+  });
+}
+export function getDetail(id) {
+  return request({
+    url: `/api/article/${id}`,
+    method: "get"
+  });
 }
 export function updateArticle(data) {
   return request({
-    url: '/api/article',
-    method: 'put',
+    url: "/api/article",
+    method: "put",
     data
-  })
+  });
 }
 
 export function addArticle(data) {
   return request({
-    url: '/api/article',
-    method: 'post',
+    url: "/api/article",
+    method: "post",
     data
-  })
+  });
 }
 
 export function delArticle(params) {
   return request({
-    url: '/api/article',
-    method: 'DELETE',
+    url: "/api/article",
+    method: "DELETE",
     params
-  })
+  });
 }
-
-

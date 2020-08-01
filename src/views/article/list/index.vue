@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container" style="position: absolute;width:100%;height:100%">
+  <div class="app-container">
     <el-form :inline="true" :model="filters">
       <el-form-item>
         文章标题：
@@ -11,7 +11,10 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="search()">快速查找</el-button>
-        <el-button type="primary" @click="showAddDialog()">添加</el-button>
+        <el-button
+          type="primary"
+          @click="$router.push('/article/createArticle')"
+        >添加</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -27,7 +30,7 @@
         <template slot-scope="scope">
           <el-button
             size="mini"
-            @click="showEditDialog(scope.$index, scope.row)"
+            @click="$router.push(`/article/editArticle/${scope.row.id}`)"
           >
             编辑
           </el-button>
@@ -52,32 +55,19 @@
         @current-change="handleCurrentChange"
       />
     </el-col>
-    <div
-      v-show="tanKuang"
-      ref="tanKuang"
-      style="position:absolute;z-index: 50;background-color:#ffffff;top:20px;left:0;width:100%;height:100%;overflow:auto;"
-    >
-      <article-edit
-        :row-record="ruleForm"
-        @resetForm="resetForm"
-        @reLoadForm="reLoadForm"
-      />
-    </div>
   </div>
 </template>
 
 <script>
-import articleEdit from "@/views/article/edit";
 import { getList, delArticle } from "@/api/article";
 
 export default {
   name: "ArticleList",
-  components: { articleEdit },
+  components: {},
   data() {
     return {
       list: null,
       listLoading: false,
-      tanKuang: false,
       total: 0,
       page: 1,
       pageSize: 10,
@@ -89,6 +79,10 @@ export default {
   },
   created() {
     this.fetchData();
+  },
+  activated() {
+    this.list = []; // 清空原有数据
+    this.fetchData(); // 这是我们获取数据的函数
   },
   methods: {
     fetchData() {
@@ -107,19 +101,8 @@ export default {
         this.listLoading = false;
       });
     },
-    showEditDialog: function(index, row) {
-      this.tanKuang = true;
-      this.ruleForm = Object.assign({}, row);
-    },
-    showAddDialog: function() {
-      this.tanKuang = true;
-      this.ruleForm = { delFlag: false, sort: 0 };
-    },
-    resetForm() {
-      this.tanKuang = false;
-    },
+    resetForm() {},
     reLoadForm() {
-      this.tanKuang = false;
       this.fetchData();
     },
     handleCurrentChange(val) {
