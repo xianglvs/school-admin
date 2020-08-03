@@ -49,8 +49,7 @@ const actions = {
 
   // user logout
   logout({ commit, state }) {
-    commit("SET_TOKEN", "");
-    commit("SET_USER", null);
+    commit("SET_INFO", null);
     removeToken();
     resetRouter();
     return Promise.resolve();

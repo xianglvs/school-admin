@@ -98,14 +98,12 @@ export default {
   created() {},
   mounted() {
     const quill = this.$refs.myQuillEditor.quill;
-    // 工具栏中的图片图标被单击的时候调用这个方法
-    const imgHandler = state => {
+    // 当工具栏中的图片图标被单击的时候
+    quill.getModule("toolbar").addHandler("image", state => {
       if (state) {
         document.querySelector(".uploader input").click();
       }
-    };
-    // 当工具栏中的图片图标被单击的时候
-    quill.getModule("toolbar").addHandler("image", imgHandler);
+    });
 
     //  自定义粘贴图片功能
     quill.root.addEventListener(
@@ -176,7 +174,7 @@ export default {
       // 上传完成以后修改图片地址，回显到quill编辑器中
       const quill = this.$refs.myQuillEditor.quill;
       const length = quill.getSelection() ? quill.getSelection().index : 0;
-      // 插入图片  res.info为服务器返回的图片地址
+      // 插入图片
       quill.insertEmbed(
         length,
         "image",
@@ -200,11 +198,11 @@ export default {
 </script>
 
 <style>
-.ql-editor img{
-    width: 100%;
+.ql-editor img {
+  width: 100%;
 }
-.uploader{
-    display:none;
+.uploader {
+  display: none;
 }
 .ql-editor {
   line-height: normal !important;
@@ -308,352 +306,351 @@ export default {
 .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="monospace"]::before {
   content: "等宽字体";
 }
-.ql-clean{
+.ql-clean {
   position: relative;
 }
-.ql-clean:hover::before{
+.ql-clean:hover::before {
   content: "清除字体样式";
-    position: absolute;
-    color:#FFF;
-    top: -20px;
-    z-index: 1100;
-    font-size:12px;
-    display:inline-block;
-    width:85px;
-    border-radius: 2px;
-    padding:5px;
-    background-color: #409EFF;
+  position: absolute;
+  color: #fff;
+  top: -20px;
+  z-index: 1100;
+  font-size: 12px;
+  display: inline-block;
+  width: 85px;
+  border-radius: 2px;
+  padding: 5px;
+  background-color: #409eff;
 }
 
-.ql-bold{
+.ql-bold {
   position: relative;
 }
-.ql-bold:hover::before{
+.ql-bold:hover::before {
   content: "加粗";
-    position: absolute;
-    color:#FFF;
-    top: -20px;
-    z-index: 1100;
-    font-size:12px;
-    display:inline-block;
-    width:40px;
-    border-radius: 2px;
-    padding:5px;
-    background-color: #409EFF;
+  position: absolute;
+  color: #fff;
+  top: -20px;
+  z-index: 1100;
+  font-size: 12px;
+  display: inline-block;
+  width: 40px;
+  border-radius: 2px;
+  padding: 5px;
+  background-color: #409eff;
 }
-.ql-italic{
+.ql-italic {
   position: relative;
 }
-.ql-italic:hover::before{
+.ql-italic:hover::before {
   content: "斜体";
-    position: absolute;
-    color:#FFF;
-    top: -20px;
-    z-index: 1100;
-    font-size:12px;
-    display:inline-block;
-    width:40px;
-    border-radius: 2px;
-    padding:5px;
-    background-color: #409EFF;
+  position: absolute;
+  color: #fff;
+  top: -20px;
+  z-index: 1100;
+  font-size: 12px;
+  display: inline-block;
+  width: 40px;
+  border-radius: 2px;
+  padding: 5px;
+  background-color: #409eff;
 }
-.ql-underline{
+.ql-underline {
   position: relative;
 }
-.ql-underline:hover::before{
+.ql-underline:hover::before {
   content: "下划线";
-    position: absolute;
-    color:#FFF;
-    top: -20px;
-    z-index: 1100;
-    font-size:12px;
-    display:inline-block;
-    width:50px;
-    border-radius: 2px;
-    padding:5px;
-    background-color: #409EFF;
+  position: absolute;
+  color: #fff;
+  top: -20px;
+  z-index: 1100;
+  font-size: 12px;
+  display: inline-block;
+  width: 50px;
+  border-radius: 2px;
+  padding: 5px;
+  background-color: #409eff;
 }
 
-.ql-strike{
+.ql-strike {
   position: relative;
 }
-.ql-strike:hover::before{
+.ql-strike:hover::before {
   content: "删除线";
-    position: absolute;
-    color:#FFF;
-    top: -20px;
-    z-index: 1100;
-    font-size:12px;
-    display:inline-block;
-    width:50px;
-    border-radius: 2px;
-    padding:5px;
-    background-color: #409EFF;
+  position: absolute;
+  color: #fff;
+  top: -20px;
+  z-index: 1100;
+  font-size: 12px;
+  display: inline-block;
+  width: 50px;
+  border-radius: 2px;
+  padding: 5px;
+  background-color: #409eff;
 }
 
-.ql-icon-picker{
+.ql-icon-picker {
   position: relative;
 }
-.ql-icon-picker:hover::before{
+.ql-icon-picker:hover::before {
   content: "对齐方式";
-    position: absolute;
-    color:#FFF;
-    top: -20px;
-    left:15px;
-    line-height: 12px;
-    z-index: 1100;
-    font-size:12px;
-    display:inline-block;
-    width:60px;
-    border-radius: 2px;
-    padding:5px;
-    background-color: #409EFF;
+  position: absolute;
+  color: #fff;
+  top: -20px;
+  left: 15px;
+  line-height: 12px;
+  z-index: 1100;
+  font-size: 12px;
+  display: inline-block;
+  width: 60px;
+  border-radius: 2px;
+  padding: 5px;
+  background-color: #409eff;
 }
-.ql-indent[value="-1"]{
+.ql-indent[value="-1"] {
   position: relative;
 }
-.ql-indent[value="-1"]:hover::before{
+.ql-indent[value="-1"]:hover::before {
   content: "缩进-";
-    position: absolute;
-    color:#FFF;
-    top: -20px;
-    z-index: 1100;
-    font-size:12px;
-    display:inline-block;
-    width:50px;
-    border-radius: 2px;
-    padding:5px;
-    background-color: #409EFF;
+  position: absolute;
+  color: #fff;
+  top: -20px;
+  z-index: 1100;
+  font-size: 12px;
+  display: inline-block;
+  width: 50px;
+  border-radius: 2px;
+  padding: 5px;
+  background-color: #409eff;
 }
-.ql-indent[value="+1"]{
+.ql-indent[value="+1"] {
   position: relative;
 }
-.ql-indent[value="+1"]:hover::before{
+.ql-indent[value="+1"]:hover::before {
   content: "缩进+";
-    position: absolute;
-    color:#FFF;
-    top: -20px;
-    z-index: 1100;
-    font-size:12px;
-    display:inline-block;
-    width:50px;
-    border-radius: 2px;
-    padding:5px;
-    background-color: #409EFF;
+  position: absolute;
+  color: #fff;
+  top: -20px;
+  z-index: 1100;
+  font-size: 12px;
+  display: inline-block;
+  width: 50px;
+  border-radius: 2px;
+  padding: 5px;
+  background-color: #409eff;
 }
-.ql-list[value="ordered"]{
+.ql-list[value="ordered"] {
   position: relative;
 }
-.ql-list[value="ordered"]:hover::before{
+.ql-list[value="ordered"]:hover::before {
   content: "有序列表";
-    position: absolute;
-    color:#FFF;
-    top: -20px;
-    z-index: 1100;
-    font-size:12px;
-    display:inline-block;
-    width:60px;
-    border-radius: 2px;
-    padding:5px;
-    background-color: #409EFF;
+  position: absolute;
+  color: #fff;
+  top: -20px;
+  z-index: 1100;
+  font-size: 12px;
+  display: inline-block;
+  width: 60px;
+  border-radius: 2px;
+  padding: 5px;
+  background-color: #409eff;
 }
-.ql-list[value="bullet"]{
+.ql-list[value="bullet"] {
   position: relative;
 }
-.ql-list[value="bullet"]:hover::before{
+.ql-list[value="bullet"]:hover::before {
   content: "无序列表";
-    position: absolute;
-    color:#FFF;
-    top: -20px;
-    z-index: 1100;
-    font-size:12px;
-    display:inline-block;
-    width:60px;
-    border-radius: 2px;
-    padding:5px;
-    background-color: #409EFF;
+  position: absolute;
+  color: #fff;
+  top: -20px;
+  z-index: 1100;
+  font-size: 12px;
+  display: inline-block;
+  width: 60px;
+  border-radius: 2px;
+  padding: 5px;
+  background-color: #409eff;
 }
 
-.ql-color{
+.ql-color {
   position: relative;
 }
-.ql-color:hover::before{
+.ql-color:hover::before {
   content: "文字颜色";
-    position: absolute;
-    color:#FFF;
-    top: -20px;
-    left:15px;
-    line-height: 12px;
-    z-index: 1100;
-    font-size:12px;
-    display:inline-block;
-    width:60px;
-    border-radius: 2px;
-    padding:5px;
-    background-color: #409EFF;
+  position: absolute;
+  color: #fff;
+  top: -20px;
+  left: 15px;
+  line-height: 12px;
+  z-index: 1100;
+  font-size: 12px;
+  display: inline-block;
+  width: 60px;
+  border-radius: 2px;
+  padding: 5px;
+  background-color: #409eff;
 }
 
-.ql-background{
+.ql-background {
   position: relative;
 }
-.ql-background:hover::before{
-    content: "背景颜色";
-    position: absolute;
-    color:#FFF;
-    top: -20px;
-    left:15px;
-    line-height: 12px;
-    z-index: 1100;
-    font-size:12px;
-    display:inline-block;
-    width:60px;
-    border-radius: 2px;
-    padding:5px;
-    background-color: #409EFF;
+.ql-background:hover::before {
+  content: "背景颜色";
+  position: absolute;
+  color: #fff;
+  top: -20px;
+  left: 15px;
+  line-height: 12px;
+  z-index: 1100;
+  font-size: 12px;
+  display: inline-block;
+  width: 60px;
+  border-radius: 2px;
+  padding: 5px;
+  background-color: #409eff;
 }
-.ql-header{
+.ql-header {
   position: relative;
 }
-.ql-header:hover::before{
-    content: "文章标题";
-    position: absolute;
-    color:#FFF;
-    top: -20px;
-    left:35px;
-    line-height: 12px;
-    z-index: 1100;
-    font-size:12px;
-    display:inline-block;
-    width:60px;
-    border-radius: 2px;
-    padding:5px;
-    background-color: #409EFF;
+.ql-header:hover::before {
+  content: "文章标题";
+  position: absolute;
+  color: #fff;
+  top: -20px;
+  left: 35px;
+  line-height: 12px;
+  z-index: 1100;
+  font-size: 12px;
+  display: inline-block;
+  width: 60px;
+  border-radius: 2px;
+  padding: 5px;
+  background-color: #409eff;
 }
-.ql-size{
+.ql-size {
   position: relative;
 }
-.ql-size:hover::before{
-    content: "字体大小";
-    position: absolute;
-    color:#FFF;
-    top: -20px;
-    left:35px;
-    line-height: 12px;
-    z-index: 1100;
-    font-size:12px;
-    display:inline-block;
-    width:60px;
-    border-radius: 2px;
-    padding:5px;
-    background-color: #409EFF;
+.ql-size:hover::before {
+  content: "字体大小";
+  position: absolute;
+  color: #fff;
+  top: -20px;
+  left: 35px;
+  line-height: 12px;
+  z-index: 1100;
+  font-size: 12px;
+  display: inline-block;
+  width: 60px;
+  border-radius: 2px;
+  padding: 5px;
+  background-color: #409eff;
 }
-.ql-direction{
+.ql-direction {
   position: relative;
 }
-.ql-direction:hover::before{
-    content: "文本方向";
-    position: absolute;
-    color:#FFF;
-    top: -20px;
-    left:15px;
-    line-height: 12px;
-    z-index: 1100;
-    font-size:12px;
-    display:inline-block;
-    width:60px;
-    border-radius: 2px;
-    padding:5px;
-    background-color: #409EFF;
+.ql-direction:hover::before {
+  content: "文本方向";
+  position: absolute;
+  color: #fff;
+  top: -20px;
+  left: 15px;
+  line-height: 12px;
+  z-index: 1100;
+  font-size: 12px;
+  display: inline-block;
+  width: 60px;
+  border-radius: 2px;
+  padding: 5px;
+  background-color: #409eff;
 }
-.ql-script[value="sub"]{
+.ql-script[value="sub"] {
   position: relative;
 }
-.ql-script[value="sub"]:hover::before{
-    content: "下标";
-    position: absolute;
-    color:#FFF;
-    top: -20px;
-    left:15px;
-    line-height: 12px;
-    z-index: 1100;
-    font-size:12px;
-    display:inline-block;
-    width:35px;
-    border-radius: 2px;
-    padding:5px;
-    background-color: #409EFF;
+.ql-script[value="sub"]:hover::before {
+  content: "下标";
+  position: absolute;
+  color: #fff;
+  top: -20px;
+  left: 15px;
+  line-height: 12px;
+  z-index: 1100;
+  font-size: 12px;
+  display: inline-block;
+  width: 35px;
+  border-radius: 2px;
+  padding: 5px;
+  background-color: #409eff;
 }
-.ql-script[value="super"]{
+.ql-script[value="super"] {
   position: relative;
 }
-.ql-script[value="super"]:hover::before{
-    content: "上标";
-    position: absolute;
-    color:#FFF;
-    top: -20px;
-    left:15px;
-    line-height: 12px;
-    z-index: 1100;
-    font-size:12px;
-    display:inline-block;
-    width:35px;
-    border-radius: 2px;
-    padding:5px;
-    background-color: #409EFF;
+.ql-script[value="super"]:hover::before {
+  content: "上标";
+  position: absolute;
+  color: #fff;
+  top: -20px;
+  left: 15px;
+  line-height: 12px;
+  z-index: 1100;
+  font-size: 12px;
+  display: inline-block;
+  width: 35px;
+  border-radius: 2px;
+  padding: 5px;
+  background-color: #409eff;
 }
-.ql-link{
+.ql-link {
   position: relative;
 }
-.ql-link:hover::before{
-    content: "超链接";
-    position: absolute;
-    color:#FFF;
-    top: -20px;
-    left:15px;
-    line-height: 12px;
-    z-index: 1100;
-    font-size:12px;
-    display:inline-block;
-    width:50px;
-    border-radius: 2px;
-    padding:5px;
-    background-color: #409EFF;
+.ql-link:hover::before {
+  content: "超链接";
+  position: absolute;
+  color: #fff;
+  top: -20px;
+  left: 15px;
+  line-height: 12px;
+  z-index: 1100;
+  font-size: 12px;
+  display: inline-block;
+  width: 50px;
+  border-radius: 2px;
+  padding: 5px;
+  background-color: #409eff;
 }
-.ql-image{
+.ql-image {
   position: relative;
 }
-.ql-image:hover::before{
-    content: "上传图片";
-    position: absolute;
-    color:#FFF;
-    top: -20px;
-    left:15px;
-    line-height: 12px;
-    z-index: 1100;
-    font-size:12px;
-    display:inline-block;
-    width:60px;
-    border-radius: 2px;
-    padding:5px;
-    background-color: #409EFF;
+.ql-image:hover::before {
+  content: "上传图片";
+  position: absolute;
+  color: #fff;
+  top: -20px;
+  left: 15px;
+  line-height: 12px;
+  z-index: 1100;
+  font-size: 12px;
+  display: inline-block;
+  width: 60px;
+  border-radius: 2px;
+  padding: 5px;
+  background-color: #409eff;
 }
-.ql-video{
+.ql-video {
   position: relative;
 }
-.ql-video:hover::before{
-    content: "插入视频";
-    position: absolute;
-    color:#FFF;
-    top: -20px;
-    left:15px;
-    line-height: 12px;
-    z-index: 1100;
-    font-size:12px;
-    display:inline-block;
-    width:60px;
-    border-radius: 2px;
-    padding:5px;
-    background-color: #409EFF;
+.ql-video:hover::before {
+  content: "插入视频";
+  position: absolute;
+  color: #fff;
+  top: -20px;
+  left: 15px;
+  line-height: 12px;
+  z-index: 1100;
+  font-size: 12px;
+  display: inline-block;
+  width: 60px;
+  border-radius: 2px;
+  padding: 5px;
+  background-color: #409eff;
 }
-
 </style>
