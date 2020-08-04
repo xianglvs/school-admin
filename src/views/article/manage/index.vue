@@ -2,7 +2,7 @@
   <el-form
     ref="form"
     class="form"
-    label-width="100px"
+    label-width="80px"
     :rules="rules"
     :model="record"
   >
@@ -209,7 +209,7 @@ export default {
   margin-top:40px;
 }
 .form {
-  padding: 100px 50px;
+  padding: 50px 0px;
   max-width: 530px;
 }
 </style>
