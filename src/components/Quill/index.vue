@@ -29,7 +29,16 @@ import Quill from "quill";
 import { quillEditor } from "vue-quill-editor";
 import { getToken } from "@/utils/auth";
 const fontSizeStyle = Quill.import("attributors/style/size");
-fontSizeStyle.whitelist = ["12px", "14px", "16px", false, "20px", "22px", "24px"];
+const Delta = Quill.import("delta");
+fontSizeStyle.whitelist = [
+  "12px",
+  "14px",
+  "16px",
+  false,
+  "20px",
+  "22px",
+  "24px"
+];
 Quill.register(fontSizeStyle, true);
 const toolbarOptions = [
   ["bold", "italic", "underline", "strike"], // 加粗 斜体 下划线 删除线
@@ -103,11 +112,31 @@ export default {
         document.querySelector(".uploader input").click();
       }
     });
+    // 过滤所有特别的字符,和图片上的属性
+    quill.clipboard.addMatcher(Node.ELEMENT_NODE, function(node, delta) {
+      const ops = [];
+      delta.ops.forEach(op => {
+        if (op.insert && (typeof op.insert === "string" || op.insert.image)) {
+          ops.push({
+            insert: op.insert
+          });
+        }
+      });
+      delta.ops = ops;
+      return delta;
+    });
 
-    //  自定义粘贴图片功能
+    quill.clipboard.addMatcher("img", (node, delta) => {
+      // delta.forEach(ele => {
+      //   ele.insert.image = "http://www.baidu.com";
+      // });
+      return delta;
+    });
+
+    // 自定义粘贴图片功能
     quill.root.addEventListener(
       "paste",
-      evt => {
+      (evt, value) => {
         if (
           evt.clipboardData &&
           evt.clipboardData.files &&
@@ -134,6 +163,7 @@ export default {
             });
           });
         }
+        return;
       },
       false
     );
@@ -197,17 +227,19 @@ export default {
 </script>
 
 <style>
-.quill-editor .ql-editor ol li,.quill-editor .ql-editor ul li{
-  margin:0;
-  padding:0;
+.quill-editor .ql-editor ol li,
+.quill-editor .ql-editor ul li {
+  margin: 0;
+  padding: 0;
 }
-.ql-editor ol, .ql-editor ul{
+.ql-editor ol,
+.ql-editor ul {
   padding: 0 25px;
   font-size: 18px;
 }
 
-.ql-editor li::before{
-  font-size:16px;
+.ql-editor li::before {
+  font-size: 16px;
 }
 
 .ql-snow .ql-editor h1 {
@@ -241,6 +273,7 @@ export default {
 
 .ql-editor img {
   width: 100%;
+  display: block;
 }
 .uploader {
   display: none;
