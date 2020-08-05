@@ -112,10 +112,11 @@ export default {
   methods: {
     getListImage(content) {
       const div = document.createElement("div");
+      div.innerHTML = content;
       const imgs = div.querySelectorAll("img");
       const listImage = [];
       imgs.forEach(ele => {
-        listImage.push(listImage.ele.getAttribute("src"));
+        listImage.push(ele.getAttribute("src"));
       });
       return listImage;
     },
