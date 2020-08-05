@@ -112,10 +112,13 @@ export default {
   methods: {
     getListImage(content) {
       const div = document.createElement("div");
+      div.innerHTML = content;
       const imgs = div.querySelectorAll("img");
       const listImage = [];
       imgs.forEach(ele => {
-        listImage.push(listImage.ele.getAttribute("src"));
+        if (ele.getAttribute("src")) {
+          listImage.push(ele.getAttribute("src"));
+        }
       });
       return listImage;
     },
@@ -139,7 +142,9 @@ export default {
       if (imageCount > listImage.length) {
         callback(
           new Error(
-            `因为"列表显示"选择了"${listTypeWord[this.record.listType]}",则文章内容至少需要存在"${imageCount}"张图片才可以正常显示`
+            `因为"列表显示"选择了"${
+              listTypeWord[this.record.listType]
+            }",则文章内容至少需要存在"${imageCount}"张图片才可以正常显示`
           )
         );
       } else {
@@ -205,8 +210,8 @@ export default {
 };
 </script>
 <style>
-.mybutton{
-  margin-top:40px;
+.mybutton {
+  margin-top: 40px;
 }
 .form {
   padding: 50px 0px;
