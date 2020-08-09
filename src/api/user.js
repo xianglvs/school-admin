@@ -32,3 +32,11 @@ export async function getInfo(token) {
     }
   });
 }
+
+export function updateUser(data) {
+  return request({
+    url: "/api/user",
+    method: "put",
+    data
+  });
+}
