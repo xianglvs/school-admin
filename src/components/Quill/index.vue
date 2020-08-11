@@ -290,7 +290,7 @@ export default {
 .ql-editor {
   line-height: normal !important;
   box-sizing: border-box;
-  height: 700px;
+  height: 60vh;
 }
 .ql-editor p {
   font-size: 18px;
