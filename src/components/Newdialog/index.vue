@@ -2,8 +2,8 @@
   <el-dialog
     :title="title"
     :visible.sync="dialogVisible"
-    width="30%"
-    :before-close="handleClose">
+    :before-close="handleClose"
+  >
     <slot />
     <span slot="footer" class="dialog-footer">
       <el-button @click="handleClose">取 消</el-button>
@@ -40,7 +40,11 @@ export default {
 };
 </script>
 <style lang="scss">
-.el-form-item__label{
+.el-form-item__label {
   font-weight: normal;
+}
+.el-dialog{
+  width:90%;
+  max-width: 600px;
 }
 </style>
