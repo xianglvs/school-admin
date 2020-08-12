@@ -82,6 +82,7 @@ export default {
     return {
       url: process.env.VUE_APP_BASE_API + "/api/file/upload",
       content: this.value,
+      initEvent: false,
       updateParams: {},
       headers: {
         token: getToken()
@@ -100,13 +101,7 @@ export default {
   },
   watch: {
     value: function(newVal, oldVal) {
-      if (oldVal == newVal) {
-        return;
-      }
       this.content = newVal;
-      setTimeout(() => {
-        this.initEvent();
-      }, 200);
     }
   },
   created() {},
@@ -118,66 +113,69 @@ export default {
         document.querySelector(".uploader input").click();
       }
     });
+    // 过滤所有特别的字符,和图片上的属性
+    quill.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
+      if (!this.initEvent) {
+        return delta;
+      }
+      const ops = [];
+      delta.ops.forEach(op => {
+        if (op.insert && (typeof op.insert === "string" || op.insert.image)) {
+          ops.push({
+            insert: op.insert
+          });
+        }
+      });
+      delta.ops = ops;
+      return delta;
+    });
+
+    quill.clipboard.addMatcher("img", (node, delta) => {
+      if (!this.initEvent) {
+        return delta;
+      }
+      // delta.forEach(ele => {
+      //   ele.insert.image = "http://www.baidu.com";
+      // });
+      return delta;
+    });
+
+    // 自定义粘贴图片功能
+    quill.root.addEventListener(
+      "paste",
+      (evt, value) => {
+        if (
+          evt.clipboardData &&
+          evt.clipboardData.files &&
+          evt.clipboardData.files.length
+        ) {
+          evt.preventDefault();
+          [].forEach.call(evt.clipboardData.files, file => {
+            if (!file.type.match(/^image\/(gif|jpe?g|a?png|bmp)/i)) {
+              return;
+            }
+            this.uploadToServer(file, res => {
+              const quill = this.$refs.myQuillEditor.quill;
+              var range = quill.getSelection();
+              if (range) {
+                //  在当前光标位置插入图片
+                quill.insertEmbed(
+                  range.index,
+                  "image",
+                  process.env.VUE_APP_BASE_API + res.data.path
+                );
+                //  将光标移动到图片后面
+                quill.setSelection(range.index + 1);
+              }
+            });
+          });
+        }
+        return;
+      },
+      false
+    );
   },
   methods: {
-    initEvent() {
-      const quill = this.$refs.myQuillEditor.quill;
-      // 过滤所有特别的字符,和图片上的属性
-      quill.clipboard.addMatcher(Node.ELEMENT_NODE, function(node, delta) {
-        const ops = [];
-        delta.ops.forEach(op => {
-          if (op.insert && (typeof op.insert === "string" || op.insert.image)) {
-            ops.push({
-              insert: op.insert
-            });
-          }
-        });
-        delta.ops = ops;
-        return delta;
-      });
-
-      quill.clipboard.addMatcher("img", (node, delta) => {
-        // delta.forEach(ele => {
-        //   ele.insert.image = "http://www.baidu.com";
-        // });
-        return delta;
-      });
-
-      // 自定义粘贴图片功能
-      quill.root.addEventListener(
-        "paste",
-        (evt, value) => {
-          if (
-            evt.clipboardData &&
-            evt.clipboardData.files &&
-            evt.clipboardData.files.length
-          ) {
-            evt.preventDefault();
-            [].forEach.call(evt.clipboardData.files, file => {
-              if (!file.type.match(/^image\/(gif|jpe?g|a?png|bmp)/i)) {
-                return;
-              }
-              this.uploadToServer(file, res => {
-                const quill = this.$refs.myQuillEditor.quill;
-                var range = quill.getSelection();
-                if (range) {
-                  //  在当前光标位置插入图片
-                  quill.insertEmbed(
-                    range.index,
-                    "image",
-                    process.env.VUE_APP_BASE_API + res.data.path
-                  );
-                  //  将光标移动到图片后面
-                  quill.setSelection(range.index + 1);
-                }
-              });
-            });
-          }
-          return;
-        },
-        false
-      );
-    },
     uploadToServer(file, callback) {
       this.loadingImg = true;
       var xhr = new XMLHttpRequest();
@@ -200,6 +198,7 @@ export default {
       };
     },
     onEditorChange() {
+      this.initEvent = true;
       this.$emit("change", this.content);
     },
     beforeUpload(request, file) {
