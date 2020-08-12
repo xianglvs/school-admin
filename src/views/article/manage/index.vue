@@ -116,8 +116,13 @@ export default {
       const imgs = div.querySelectorAll("img");
       const listImage = [];
       imgs.forEach(ele => {
-        if (ele.getAttribute("src")) {
-          listImage.push(ele.getAttribute("src"));
+        const src = ele.getAttribute("src");
+        if (src) {
+          if (!src.startsWith("http")) {
+            listImage.push(ele.getAttribute("src").split("!")[0]);
+          } else {
+            listImage.push(ele.getAttribute("src"));
+          }
         }
       });
       return listImage;
