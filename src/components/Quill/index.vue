@@ -215,7 +215,7 @@ export default {
       quill.insertEmbed(
         length,
         "image",
-        process.env.VUE_APP_BASE_API + res.data.path + `!t750x750.png}`
+        process.env.VUE_APP_BASE_API + res.data.path + `!t750x750.png`
       );
       // 调整光标到最后
       quill.setSelection(length + 1);
