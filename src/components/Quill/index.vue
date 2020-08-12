@@ -30,6 +30,31 @@ import { quillEditor } from "vue-quill-editor";
 import { getToken } from "@/utils/auth";
 const fontSizeStyle = Quill.import("attributors/style/size");
 const Delta = Quill.import("delta");
+var Link = Quill.import("formats/link");
+
+class MyLink extends Link {
+  static create(value) {
+    const node = super.create(value);
+    value = this.sanitize(value);
+    node.setAttribute("href", value);
+    node.setAttribute("rel", "noopener noreferrer");
+    node.setAttribute("target", "_self");
+    return node;
+  }
+}
+Quill.register(MyLink);
+
+var Video = Quill.import("formats/video");
+
+class MyVideo extends Video {
+  static create(value) {
+    const node = document.createElement("div");
+    node.innerHTML = value;
+    return node.querySelector("iframe");
+  }
+}
+Quill.register(MyVideo);
+
 fontSizeStyle.whitelist = [
   "12px",
   "14px",
@@ -235,6 +260,9 @@ export default {
 </script>
 
 <style>
+.ql-editor iframe {
+  width: 100%;
+}
 .quill-editor .ql-editor ol li,
 .quill-editor .ql-editor ul li {
   margin: 0;

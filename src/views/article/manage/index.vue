@@ -220,12 +220,15 @@ export default {
   }
 };
 </script>
-<style>
+<style lang="scss" scoped>
 .mybutton {
   margin-top: 40px;
 }
 .form {
-  padding: 50px 0px;
+  padding: 50px 10px 50px 0;
   max-width: 530px;
+  @media screen and (min-width: 650px) {
+    padding: 50px 40px;
+  }
 }
 </style>
