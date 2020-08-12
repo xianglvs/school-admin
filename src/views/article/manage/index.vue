@@ -52,7 +52,7 @@
       />
     </el-form-item>
     <el-form-item class="mybutton">
-      <el-button type="primary" @click="submitForm('form')">
+      <el-button :loading="loading" type="primary" @click="submitForm('form')">
         保存
       </el-button>
       <el-button @click="$router.go(-1)">返回</el-button>
@@ -77,6 +77,7 @@ export default {
   data() {
     return {
       isClear: false,
+      loading: false,
       record: {
         disableFlag: false,
         sort: 0,
@@ -187,6 +188,7 @@ export default {
       });
     },
     update(params) {
+      this.loading = true;
       updateArticle(params).then(response => {
         if (response.code == 0) {
           this.$message({
@@ -196,19 +198,23 @@ export default {
           });
           this.$emit("reLoadForm");
         }
+        this.loading = false;
       });
     },
     add(params) {
-      delete params.id;
+      this.loading = true;
       addArticle(params).then(response => {
         if (response.code == 0) {
+          this.record.id = response.data;
           this.$message({
             message: "添加成功",
             center: true,
             type: "success"
           });
-          this.$route.go(-1);
         }
+        setTimeout(() => {
+          this.loading = false;
+        }, 200);
       });
     }
   }

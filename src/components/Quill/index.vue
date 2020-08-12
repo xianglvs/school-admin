@@ -162,7 +162,7 @@ export default {
                 quill.insertEmbed(
                   range.index,
                   "image",
-                  process.env.VUE_APP_BASE_API + res.data.path + `!t750x750.${res.data.path.split(".")[1]}`
+                  process.env.VUE_APP_BASE_API + res.data.path + `!t750x750.png`
                 );
                 //  将光标移动到图片后面
                 quill.setSelection(range.index + 1);
@@ -215,7 +215,7 @@ export default {
       quill.insertEmbed(
         length,
         "image",
-        process.env.VUE_APP_BASE_API + res.data.path + `!t750x750.${res.data.path.split(".")[1]}`
+        process.env.VUE_APP_BASE_API + res.data.path + `!t750x750.png}`
       );
       // 调整光标到最后
       quill.setSelection(length + 1);

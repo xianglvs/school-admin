@@ -141,7 +141,6 @@ export default {
               center: true,
               type: "success"
             });
-            this.page = 1;
             this.fetchData();
           }
         });
