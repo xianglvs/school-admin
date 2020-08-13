@@ -65,7 +65,7 @@ class MyVideo extends Video {
     if (vedio) {
       return vedio.src;
     }
-    if (["http", "https", "mailto", "tel"].indexOf(protocol) > -1) {
+    if (["http", "https"].indexOf(protocol) > -1) {
       return value;
     }
     return false;
