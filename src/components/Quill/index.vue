@@ -48,9 +48,30 @@ var Video = Quill.import("formats/video");
 
 class MyVideo extends Video {
   static create(value) {
+    if (!this.getVedio(value)) {
+      return document.createElement(null);
+    }
+    return super.create(value);
+  }
+  static getVedio(value) {
     const node = document.createElement("div");
     node.innerHTML = value;
-    return node.querySelector("iframe");
+    const protocol = value.slice(0, value.indexOf(":"));
+    const iframe = node.querySelector("iframe");
+    const vedio = node.querySelector("vedio");
+    if (iframe) {
+      return iframe.src;
+    }
+    if (vedio) {
+      return vedio.src;
+    }
+    if (["http", "https", "mailto", "tel"].indexOf(protocol) > -1) {
+      return value;
+    }
+    return false;
+  }
+  static sanitize(url) {
+    return this.getVedio(url) || super.sanitize(url);
   }
 }
 Quill.register(MyVideo);
