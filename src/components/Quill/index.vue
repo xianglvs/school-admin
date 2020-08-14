@@ -15,6 +15,7 @@
       :accept="'image/*'"
       :action="url"
       name="file"
+      :multiple="true"
       :headers="headers"
       :data="updateParams"
       :show-upload-list="false"
