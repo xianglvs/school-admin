@@ -18,11 +18,7 @@
       </div>
     </div>
     <!-- <div class="dashboard-text">roles: <span v-for="role in user.data.roles" :key="role">{{ role }}</span></div> -->
-    <new-dialog
-      ref="changePsdDialog"
-      title="重置密码"
-      @closeDialog="closeChangePsdDialog"
-      @submitDialog="submitChangePsdForm">
+    <new-dialog ref="changePsdDialog" title="重置密码" @closeDialog="closeChangePsdDialog" @submitDialog="submitChangePsdForm">
       <el-form ref="changePsdForm" class="dialog-form" label-width="90px" :model="psdForm" :rules="psdRules">
         <el-form-item label="原密码" prop="password">
           <el-input v-model="psdForm.password" type="password" placeholder="请输入原密码" />
@@ -36,10 +32,7 @@
       </el-form>
     </new-dialog>
 
-    <new-dialog
-      ref="changeUserDialog"
-      title="修改用户信息"
-      @submitDialog="submitChangeUserForm">
+    <new-dialog ref="changeUserDialog" title="修改用户信息" @submitDialog="submitChangeUserForm">
       <el-form ref="changeUserForm" class="dialog-form" label-width="80px" :model="userForm" :rules="userRules">
         <el-form-item label="用户名" prop="loginName">
           <el-input v-model="userForm.loginName" placeholder="请输入用户名" />
@@ -59,7 +52,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import { updateUser } from "@/api/user";
 import NewDialog from "@/components/Newdialog/index.vue";
 
@@ -133,10 +126,12 @@ export default {
     ])
   },
   created() {
-    console.log(this.user, 111);
     this.userForm = Object.assign({}, this.user);
   },
   methods: {
+    ...mapActions({
+      "getInfo": "user/getInfo"
+    }),
     closeChangePsdDialog() {
       this.$refs["changePsdForm"].resetFields();
     },
@@ -162,27 +157,32 @@ export default {
           const params = {
             email: this.userForm.email,
             id: this.userForm.id,
-            latitude: this.userForm.latitude ? this.userForm.latitude : 0,
-            longitude: this.userForm.longitude ? this.userForm.longitude : 0,
+            latitude: this.userForm.latitude || 0,
+            longitude: this.userForm.longitude || 0,
             mobile: this.userForm.mobile,
             name: this.userForm.loginName,
             no: this.userForm.no,
-            phone: this.userForm.phone ? this.userForm.phone : "",
-            photo: this.userForm.photo ? this.userForm.photo : "",
-            qq: this.userForm.qq ? this.userForm.qq : "",
-            remarks: this.userForm.remarks ? this.userForm.remarks : "",
-            roles: this.userForm.roles ? this.userForm.roles : [],
-            // roles: [],
+            phone: this.userForm.phone || "",
+            photo: this.userForm.photo || "",
+            qq: this.userForm.qq || "",
+            remarks: this.userForm.remarks || "",
+            // roles: this.userForm.roles || [],
+            roles: [],
             sysAreaId: this.userForm.sysAreaId,
             sysOfficeId: this.userForm.sysOfficeId,
             type: this.userForm.type,
-            weixin: this.userForm.weixin ? this.userForm.weixin : ""
+            weixin: this.userForm.weixin || ""
           };
-          console.log(params, 33333333);
-          updateUser(params).then(response => {
-            console.log(response, 111);
-            if (response.code == 0) {
-              console.log(response, 222);
+          updateUser(params).then(res => {
+            if (res.code == 0) {
+              this.$message({
+                message: "修改成功",
+                center: true,
+                type: "success"
+              });
+              this.$refs.changeUserDialog.handleClose();
+              // this.getInfo();
+              this.$store.dispatch("user/getInfo");
             }
           });
         } else {

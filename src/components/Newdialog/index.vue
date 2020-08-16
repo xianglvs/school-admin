@@ -44,7 +44,12 @@ export default {
   font-weight: normal;
 }
 .el-dialog{
-  width:90%;
+  width: 32%;
   max-width: 600px;
+}
+@media screen and (max-width: 640px) {
+  .el-dialog{
+    width: 320px;
+  }
 }
 </style>
