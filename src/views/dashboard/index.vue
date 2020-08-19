@@ -32,8 +32,18 @@
       </el-form>
     </new-dialog>
 
-    <new-dialog ref="changeUserDialog" title="修改用户信息" @submitDialog="submitChangeUserForm">
-      <el-form ref="changeUserForm" class="dialog-form" label-width="80px" :model="userForm" :rules="userRules">
+    <new-dialog
+      ref="changeUserDialog"
+      title="修改用户信息"
+      @submitDialog="submitChangeUserForm"
+    >
+      <el-form
+        ref="changeUserForm"
+        class="dialog-form"
+        label-width="80px"
+        :model="userForm"
+        :rules="userRules"
+      >
         <el-form-item label="用户名" prop="loginName">
           <el-input v-model="userForm.loginName" placeholder="请输入用户名" />
         </el-form-item>

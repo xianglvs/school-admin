@@ -46,10 +46,6 @@ export default {
 .el-dialog{
   width: 32%;
   max-width: 600px;
-}
-@media screen and (max-width: 640px) {
-  .el-dialog{
-    width: 320px;
-  }
+  min-width: 340px;
 }
 </style>

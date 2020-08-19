@@ -48,3 +48,11 @@ export function getUserList(params) {
     params
   });
 }
+
+export function addUser(params) {
+  return request({
+    url: "/api/user",
+    method: "post",
+    params
+  });
+}
