@@ -125,6 +125,7 @@ export const asyncRoutes = [
         name: "userList",
         meta: {
           title: "用户列表",
+          icon: "user",
           keepAlive: true
         }
       }
