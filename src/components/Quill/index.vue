@@ -15,6 +15,7 @@
       :accept="'image/*'"
       :action="url"
       name="file"
+      :multiple="true"
       :headers="headers"
       :data="updateParams"
       :show-upload-list="false"
@@ -29,20 +30,74 @@ import Quill from "quill";
 import { quillEditor } from "vue-quill-editor";
 import { getToken } from "@/utils/auth";
 const fontSizeStyle = Quill.import("attributors/style/size");
-fontSizeStyle.whitelist = ["16px", "18px", "20px", "24px", "32px"];
+const Delta = Quill.import("delta");
+var Link = Quill.import("formats/link");
+
+class MyLink extends Link {
+  static create(value) {
+    const node = super.create(value);
+    value = this.sanitize(value);
+    node.setAttribute("href", value);
+    node.setAttribute("rel", "noopener noreferrer");
+    node.setAttribute("target", "_self");
+    return node;
+  }
+}
+Quill.register(MyLink);
+
+var Video = Quill.import("formats/video");
+
+class MyVideo extends Video {
+  static create(value) {
+    if (!this.getVedio(value)) {
+      return document.createElement(null);
+    }
+    return super.create(value);
+  }
+  static getVedio(value) {
+    const node = document.createElement("div");
+    node.innerHTML = value;
+    const protocol = value.slice(0, value.indexOf(":"));
+    const iframe = node.querySelector("iframe");
+    const vedio = node.querySelector("vedio");
+    if (iframe) {
+      return iframe.src;
+    }
+    if (vedio) {
+      return vedio.src;
+    }
+    if (["http", "https"].indexOf(protocol) > -1) {
+      return value;
+    }
+    return false;
+  }
+  static sanitize(url) {
+    return this.getVedio(url) || super.sanitize(url);
+  }
+}
+Quill.register(MyVideo);
+
+fontSizeStyle.whitelist = [
+  "12px",
+  "14px",
+  "16px",
+  false,
+  "20px",
+  "22px",
+  "24px"
+];
 Quill.register(fontSizeStyle, true);
 const toolbarOptions = [
   ["bold", "italic", "underline", "strike"], // 加粗 斜体 下划线 删除线
-  [{ align: [] }], // 对齐方式
-  [{ indent: "-1" }, { indent: "+1" }], // 缩进
-  [{ list: "ordered" }, { list: "bullet" }], // 有序、无序列表
+  // [{ indent: "-1" }, { indent: "+1" }], // 缩进
+  [{ align: [] }, { list: "ordered" }, { list: "bullet" }], // 对齐方式 有序、无序列表
   [{ color: [] }, { background: [] }], // 字体颜色、字体背景颜色
-  [{ header: [false, 1, 2, 3, 4] }], // 标题
-  [{ size: fontSizeStyle.whitelist }], // 字体大小
-  ["clean"], // 清除文本格式
-  [{ direction: "rtl" }], // 文本方向
-  // [{ header: 1 }, { header: 2 }], // 1、2 级标题
   [{ script: "sub" }, { script: "super" }], // 上标/下标
+  ["clean"], // 清除文本格式
+  [{ header: [5, 4, false, 3, 2, 1] }], // 标题
+  [{ size: fontSizeStyle.whitelist }], // 字体大小
+  // [{ direction: "rtl" },"blockquote",], // 文本方向
+  // [{ header: 1 }, { header: 2 }], // 1、2 级标题
   // [{ font: [] }], // 字体种类
   ["link", "image", "video"] // 链接、图片、视频
 ];
@@ -74,6 +129,7 @@ export default {
     return {
       url: process.env.VUE_APP_BASE_API + "/api/file/upload",
       content: this.value,
+      initEvent: false,
       updateParams: {},
       headers: {
         token: getToken()
@@ -104,11 +160,37 @@ export default {
         document.querySelector(".uploader input").click();
       }
     });
+    // 过滤所有特别的字符,和图片上的属性
+    quill.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
+      if (!this.initEvent) {
+        return delta;
+      }
+      const ops = [];
+      delta.ops.forEach(op => {
+        if (op.insert && (typeof op.insert === "string" || op.insert.image)) {
+          ops.push({
+            insert: op.insert
+          });
+        }
+      });
+      delta.ops = ops;
+      return delta;
+    });
 
-    //  自定义粘贴图片功能
+    quill.clipboard.addMatcher("img", (node, delta) => {
+      if (!this.initEvent) {
+        return delta;
+      }
+      // delta.forEach(ele => {
+      //   ele.insert.image = "http://www.baidu.com";
+      // });
+      return delta;
+    });
+
+    // 自定义粘贴图片功能
     quill.root.addEventListener(
       "paste",
-      evt => {
+      (evt, value) => {
         if (
           evt.clipboardData &&
           evt.clipboardData.files &&
@@ -127,7 +209,7 @@ export default {
                 quill.insertEmbed(
                   range.index,
                   "image",
-                  process.env.VUE_APP_BASE_API + res.data.path
+                  process.env.VUE_APP_BASE_API + res.data.path + `!t750x750.png`
                 );
                 //  将光标移动到图片后面
                 quill.setSelection(range.index + 1);
@@ -135,6 +217,7 @@ export default {
             });
           });
         }
+        return;
       },
       false
     );
@@ -162,6 +245,7 @@ export default {
       };
     },
     onEditorChange() {
+      this.initEvent = true;
       this.$emit("change", this.content);
     },
     beforeUpload(request, file) {
@@ -178,7 +262,7 @@ export default {
       quill.insertEmbed(
         length,
         "image",
-        process.env.VUE_APP_BASE_API + res.data.path
+        process.env.VUE_APP_BASE_API + res.data.path + `!t750x750.png`
       );
       // 调整光标到最后
       quill.setSelection(length + 1);
@@ -198,22 +282,89 @@ export default {
 </script>
 
 <style>
+.ql-editor iframe {
+  width: 100%;
+}
+.quill-editor .ql-editor ol li,
+.quill-editor .ql-editor ul li {
+  margin: 0;
+  padding: 0;
+}
+.ql-editor ol,
+.ql-editor ul {
+  padding: 0 25px;
+  font-size: 18px;
+}
+
+.ql-editor li::before {
+  font-size: 16px;
+}
+
+.ql-snow .ql-editor h1 {
+  font-size: 24px;
+  margin: 0;
+}
+.ql-snow .ql-editor h2 {
+  font-size: 22px;
+  margin: 0;
+}
+.ql-snow .ql-editor h3 {
+  font-size: 20px;
+  margin: 0;
+}
+.ql-snow .ql-editor h4 {
+  font-size: 16px;
+  margin: 0;
+}
+.ql-snow .ql-editor h5 {
+  font-size: 14px;
+  margin: 0;
+}
+.ql-snow .ql-editor h6 {
+  font-size: 12px;
+  margin: 0;
+}
+
+.ql-snow .ql-editor a {
+  text-decoration: none;
+}
+
 .ql-editor img {
   width: 100%;
+  display: block;
 }
 .uploader {
   display: none;
 }
 .ql-editor {
   line-height: normal !important;
-  height: 500px;
+  box-sizing: border-box;
+  height: 60vh;
 }
 .ql-editor p {
-  font-size: 16px;
+  font-size: 18px;
+  margin: 0;
 }
 .ql-snow .ql-picker {
   line-height: 24px;
 }
+
+.ql-snow .ql-tooltip::before {
+  content: "地址";
+}
+
+.ql-snow .ql-tooltip a.ql-action::after {
+  content: "编辑";
+}
+
+.ql-snow .ql-tooltip a.ql-remove::before {
+  content: "移除";
+}
+
+.ql-snow .ql-tooltip a.ql-preview {
+  line-height: 40px;
+}
+
 .ql-snow .ql-tooltip[data-mode="link"]::before {
   content: "请输入链接地址:";
 }
@@ -236,58 +387,83 @@ export default {
   font-size: 16px;
 }
 
-.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="18px"]::before,
-.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="18px"]::before {
-  content: "较小";
-}
-.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="18px"]::before {
-  font-size: 18px;
-}
-.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="20px"]::before,
-.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="20px"]::before {
-  content: "适中";
-}
-.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="20px"]::before {
-  font-size: 20px;
-}
 .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="24px"]::before,
 .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="24px"]::before {
-  content: "较大";
+  content: "极大";
 }
 .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="24px"]::before {
   font-size: 24px;
 }
-.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="32px"]::before,
-.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="32px"]::before {
+
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="22px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="22px"]::before {
   content: "特大";
 }
-.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="32px"]::before {
-  font-size: 32px;
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="22px"]::before {
+  font-size: 20px;
+}
+
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="20px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="20px"]::before {
+  content: "较大";
+}
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="20px"]::before {
+  font-size: 20px;
+}
+
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="18px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="18px"]::before {
+  content: "正常";
+}
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="18px"]::before {
+  font-size: 18px;
+}
+
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="16px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="16px"]::before {
+  content: "较小";
+}
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="16px"]::before {
+  font-size: 16px;
+}
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="14px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="14px"]::before {
+  content: "小";
+}
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="14px"]::before {
+  font-size: 14px;
+}
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="12px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="12px"]::before {
+  content: "极小";
+}
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="12px"]::before {
+  font-size: 12px;
 }
 
 .ql-snow .ql-picker.ql-header .ql-picker-label::before,
 .ql-snow .ql-picker.ql-header .ql-picker-item::before {
-  content: "正文";
+  content: "正常";
 }
 .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="1"]::before,
 .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="1"]::before {
-  content: "标题1";
+  content: "巨大";
 }
 .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="2"]::before,
 .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="2"]::before {
-  content: "标题2";
+  content: "特大";
 }
 .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="3"]::before,
 .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="3"]::before {
-  content: "标题3";
+  content: "较大";
 }
 .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="4"]::before,
 .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="4"]::before {
-  content: "标题4";
+  content: "较小";
 }
 .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="5"]::before,
 .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="5"]::before {
-  content: "标题5";
+  content: "小";
 }
 .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="6"]::before,
 .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="6"]::before {
@@ -394,6 +570,24 @@ export default {
 }
 .ql-icon-picker:hover::before {
   content: "对齐方式";
+  position: absolute;
+  color: #fff;
+  top: -20px;
+  left: 15px;
+  line-height: 12px;
+  z-index: 1100;
+  font-size: 12px;
+  display: inline-block;
+  width: 60px;
+  border-radius: 2px;
+  padding: 5px;
+  background-color: #409eff;
+}
+.ql-blockquote {
+  position: relative;
+}
+.ql-blockquote:hover::before {
+  content: "引用段落";
   position: absolute;
   color: #fff;
   top: -20px;

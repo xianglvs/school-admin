@@ -2,7 +2,7 @@
   <el-form
     ref="form"
     class="form"
-    label-width="100px"
+    label-width="80px"
     :rules="rules"
     :model="record"
   >
@@ -52,7 +52,7 @@
       />
     </el-form-item>
     <el-form-item class="mybutton">
-      <el-button type="primary" @click="submitForm('form')">
+      <el-button :loading="loading" type="primary" @click="submitForm('form')">
         保存
       </el-button>
       <el-button @click="$router.go(-1)">返回</el-button>
@@ -77,6 +77,7 @@ export default {
   data() {
     return {
       isClear: false,
+      loading: false,
       record: {
         disableFlag: false,
         sort: 0,
@@ -112,10 +113,18 @@ export default {
   methods: {
     getListImage(content) {
       const div = document.createElement("div");
+      div.innerHTML = content;
       const imgs = div.querySelectorAll("img");
       const listImage = [];
       imgs.forEach(ele => {
-        listImage.push(listImage.ele.getAttribute("src"));
+        const src = ele.getAttribute("src");
+        if (src) {
+          if (!src.startsWith("http")) {
+            listImage.push(ele.getAttribute("src").split("!")[0]);
+          } else {
+            listImage.push(ele.getAttribute("src"));
+          }
+        }
       });
       return listImage;
     },
@@ -139,7 +148,9 @@ export default {
       if (imageCount > listImage.length) {
         callback(
           new Error(
-            `因为"列表显示"选择了"${listTypeWord[this.record.listType]}",则文章内容至少需要存在"${imageCount}"张图片才可以正常显示`
+            `因为"列表显示"选择了"${
+              listTypeWord[this.record.listType]
+            }",则文章内容至少需要存在"${imageCount}"张图片才可以正常显示`
           )
         );
       } else {
@@ -177,6 +188,7 @@ export default {
       });
     },
     update(params) {
+      this.loading = true;
       updateArticle(params).then(response => {
         if (response.code == 0) {
           this.$message({
@@ -186,30 +198,37 @@ export default {
           });
           this.$emit("reLoadForm");
         }
+        this.loading = false;
       });
     },
     add(params) {
-      delete params.id;
+      this.loading = true;
       addArticle(params).then(response => {
         if (response.code == 0) {
+          this.record.id = response.data;
           this.$message({
             message: "添加成功",
             center: true,
             type: "success"
           });
-          this.$route.go(-1);
         }
+        setTimeout(() => {
+          this.loading = false;
+        }, 200);
       });
     }
   }
 };
 </script>
-<style>
-.mybutton{
-  margin-top:40px;
+<style lang="scss" scoped>
+.mybutton {
+  margin-top: 40px;
 }
 .form {
-  padding: 100px 50px;
+  padding: 50px 10px 50px 0;
   max-width: 530px;
+  @media screen and (min-width: 650px) {
+    padding: 50px 40px;
+  }
 }
 </style>

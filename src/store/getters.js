@@ -7,4 +7,4 @@ const getters = {
   roles: state => state.user.info && state.user.info.roles,
   permission_routes: state => state.permission.routes
 }
-export default getters
+export default getters;

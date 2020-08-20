@@ -109,6 +109,28 @@ export const asyncRoutes = [
       }
     ]
   },
+  {
+    path: "/user",
+    component: Layout,
+    name: "user",
+    redirect: "/user/userList",
+    meta: {
+      title: "用户管理",
+      icon: "form"
+    },
+    children: [
+      {
+        path: "userList",
+        component: () => import("@/views/user/list/index"),
+        name: "userList",
+        meta: {
+          title: "用户列表",
+          icon: "user",
+          keepAlive: true
+        }
+      }
+    ]
+  },
   // {
   //   path: "/nested",
   //   component: Layout,
