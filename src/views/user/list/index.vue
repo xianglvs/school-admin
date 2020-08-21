@@ -1,9 +1,9 @@
 <template>
   <div class="app-container">
     <el-form ref="filters" :inline="true" :model="filters">
-      <el-form-item class="form-item" prop="name">
+      <el-form-item class="form-item" prop="loginName">
         <el-input
-          v-model="filters.name"
+          v-model="filters.loginName"
           placeholder="用户名"
         />
       </el-form-item>
@@ -19,7 +19,7 @@
         <el-button @click="$refs['filters'].resetFields(),search()">重置</el-button>
         <el-button
           type="primary"
-          @click="showUserDialog"
+          @click="showUserDialog('add')"
         >添加</el-button>
       </el-form-item>
     </el-form>
@@ -29,12 +29,24 @@
       highlight-current-row
       style="width: 100%;"
     >
-      <el-table-column prop="name" label="用户名" min-width="100" />
-      <el-table-column prop="mobile" label="手机号" min-width="120" />
+      <el-table-column prop="loginName" label="用户名" min-width="100" />
+      <el-table-column prop="name" label="姓名" min-width="100" />
+      <el-table-column prop="phone" label="手机号" min-width="120" />
       <el-table-column prop="qq" label="QQ号" min-width="120" />
       <el-table-column prop="email" label="邮箱" min-width="120" />
       <el-table-column
         prop="type"
+        label="用户类型"
+        :formatter="
+          (row, column, cellValue) =>
+            ['系统', '个人'][
+              cellValue
+            ]
+        "
+        min-width="80"
+      />
+      <el-table-column
+        prop="roles"
         label="用户角色"
         :formatter="
           (row, column, cellValue) =>
@@ -48,12 +60,14 @@
         <template slot-scope="scope">
           <el-button
             size="mini"
+            @click="showUserDialog('edit', scope.row)"
           >
             编辑
           </el-button>
           <el-button
             size="mini"
             type="danger"
+            @click="del(scope.$index, scope.row)"
           >
             删除
           </el-button>
@@ -72,66 +86,24 @@
       />
     </el-col>
 
-    <new-dialog
+    <user-dialog
       ref="userDialog"
       :title="userDialogTitle"
-      @submitDialog="submitUserForm"
-    >
-      <el-form
-        ref="userForm"
-        class="dialog-form"
-        label-width="80px"
-        :rules="rules"
-        :model="user"
-      >
-        <el-form-item label="用户名" prop="name">
-          <el-input v-model="user.name" placeholder="请输入用户名" />
-        </el-form-item>
-        <el-form-item label="密码" prop="password">
-          <el-input v-model="user.password" placeholder="请输入手机号" type="password" />
-        </el-form-item>
-        <el-form-item label="手机号" prop="phone">
-          <el-input v-model="user.phone" placeholder="请输入手机号" />
-        </el-form-item>
-        <el-form-item label="QQ号" prop="qq">
-          <el-input v-model="user.qq" placeholder="请输入QQ号" />
-        </el-form-item>
-        <el-form-item label="邮箱" prop="email">
-          <el-input v-model="user.email" placeholder="请输入邮箱" />
-        </el-form-item>
-        <el-form-item label="用户角色" prop="roles">
-          <el-select
-            v-model="user.roles"
-            multiple
-            filterable
-            remote
-            reserve-keyword
-            placeholder="请输入关键词"
-            :remote-method="remoteMethod"
-          >
-            <el-option
-              v-for="item in searchRolesList"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            />
-          </el-select>
-        </el-form-item>
-      </el-form>
-    </new-dialog>
+      :rolesList="rolesList"
+      :currentUser="currentUser"
+      @fetchData="fetchData"
+    />
   </div>
 </template>
 <script>
-import { mapGetters } from "vuex";
-import { getUserList, addUser } from "@/api/user";
+import { getUserList, delUser } from "@/api/user";
 import { getRolesList } from "@/api/roles";
-import NewDialog from "@/components/Newdialog/index.vue";
-import { validPassword, validPhone, validQQ, validEmail } from "@/utils/validate";
+import UserDialog from "@/views/user/list/components/userDialog.vue";
 
 export default {
   name: "UserList",
   components: {
-    NewDialog
+    UserDialog
   },
   data() {
     return {
@@ -145,35 +117,14 @@ export default {
         type: ""
       },
       userDialogTitle: "添加用户",
-      rolesList: [],
-      searchRolesList: [],
-      user: {
-        name: "",
-        password: "",
-        phone: "",
-        qq: "",
-        email: "",
-        roles: []
-      },
-      rules: {
-        name: [{ required: true, message: "请输入用户名", trigger: "blur" }],
-        password: [{ required: false, validator: validPassword, trigger: "blur" }],
-        phone: [{ required: true,  validator: validPhone, trigger: "blur" }],
-        qq: [{ required: false, validator: validQQ, trigger: "blur" }],
-        email: [{ required: false, validator: validEmail, trigger: "blur" }],
-        roles: [{ required: false, message: "请选择角色", trigger: "change" }]
-      }
+      currentUser: null,
+      rolesList: []
     };
   },
-  computed: {
-    ...mapGetters({
-      currentUser: "user"
-    })
-  },
   created() {
-    console.log(this.currentUser, 11);
     this.fetchData();
     this.fetchRolesList();
+    this.cloneUser = Object.assign({}, this.user);
   },
   methods: {
     fetchData() {
@@ -206,60 +157,49 @@ export default {
       getRolesList(params).then(response => {
         if (response.code == 0) {
           this.rolesList = response.data || [];
-          this.searchRolesList = this.rolesList;
         }
       });
     },
-    remoteMethod(query) {
-      if (query !== "") {
-        setTimeout(() => {
-          this.searchRolesList = this.rolesList.filter(item => {
-            return item.label.toLowerCase()
-              .indexOf(query.toLowerCase()) > -1;
-          });
-        }, 200);
+    showUserDialog(type, row) {
+      const obj = {
+        add: "添加用户",
+        edit: "修改用户"
+      };
+      this.userDialogTitle = obj[type];
+      this.$refs.userDialog.showDialog();
+      if (type === "add") {
+        this.currentUser = {
+          loginName: "",
+          name: "",
+          password: "",
+          phone: "",
+          qq: "",
+          email: "",
+          roles: []
+        }
       } else {
-        this.user.newTypeList = [];
+        if (row && !row['roles']) row['roles'] = [];
+        this.currentUser = row
       }
     },
-    showUserDialog() {
-      this.$refs.userDialog.handleShow();
-    },
-    submitUserForm() {
-      this.$refs["userForm"].validate(valid => {
-        console.log(valid, 111);
-        if (valid) {
-          const params = Object.assign({}, this.user);
-          this.add(params);
-        } else {
-          return false;
-        }
+    del(index, row) {
+      this.$confirm("此操作将永久删除该文章, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+        delUser({ id: row.id }).then(response => {
+          if (response.code === 0) {
+            this.$message({
+              message: "删除成功",
+              center: true,
+              type: "success"
+            });
+            this.fetchData();
+          }
+        });
       });
     },
-    add(user) {
-      const params = {
-        email: user.email,
-        loginName: this.currentUser.loginName,
-        name: user.name,
-        password: user.password,
-        phone: user.phone,
-        qq: user.qq,
-        roles: user.roles,
-        sysAreaId: this.currentUser.sysAreaId,
-        sysOfficeId: this.currentUser.sysOfficeId,
-        type: 2
-      };
-      addUser(params).then(response => {
-        if (response.code == 0) {
-          this.record.id = response.data;
-          this.$message({
-            message: "添加成功",
-            center: true,
-            type: "success"
-          });
-        }
-      });
-    }
   }
 };
 </script>
@@ -268,13 +208,6 @@ export default {
   .form-item{
     width: 148px;
     margin-right:10px;
-  }
-  .dialog-form{
-    width: 86%;
-    margin: 0 auto;
-    .el-select{
-      width: 100%;
-    }
   }
 }
 </style>

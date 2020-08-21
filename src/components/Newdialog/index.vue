@@ -3,6 +3,7 @@
     :title="title"
     :visible.sync="dialogVisible"
     :before-close="handleClose"
+    :close-on-click-modal="false"
   >
     <slot />
     <span slot="footer" class="dialog-footer">
@@ -44,8 +45,15 @@ export default {
   font-weight: normal;
 }
 .el-dialog{
-  width: 32%;
+  width: 28%;
   max-width: 600px;
   min-width: 340px;
+  .el-dialog__body{
+    border-top: 1px solid #DCDFE6;
+    border-bottom: 1px solid #DCDFE6;
+  }
+  .el-dialog__footer{
+    padding-top: 20px;
+  }
 }
 </style>

@@ -56,3 +56,19 @@ export function addUser(data) {
     data
   });
 }
+
+export function delUser(params) {
+  return request({
+    url: "/api/user",
+    method: "DELETE",
+    params
+  });
+}
+
+export function updatePassword(data) {
+  return request({
+    url: "/api/user/password",
+    method: "put",
+    data
+  });
+}

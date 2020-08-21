@@ -63,7 +63,7 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import { updateUser } from "@/api/user";
+import { updateUser, updatePassword } from "@/api/user";
 import NewDialog from "@/components/Newdialog/index.vue";
 
 export default {
@@ -151,7 +151,20 @@ export default {
     submitChangePsdForm() {
       this.$refs["changePsdForm"].validate(valid => {
         if (valid) {
-          console.log(this.psdForm, 111);
+          const params = {
+            oldPassword: this.psdForm.password,
+            password: this.psdForm.newPassword
+          }
+          updatePassword(params).then(res => {
+            if (res.code == 0) {
+              this.$message({
+                message: "修改成功",
+                center: true,
+                type: "success"
+              });
+              this.$refs.changePsdDialog.handleClose();
+            }
+          });
         } else {
           this.$message.error("请正确填写表单");
           return false;
