@@ -8,8 +8,15 @@
           style="width:200px;margin-right:10px;"
         />
       </el-form-item>
+      <el-form-item prop="disableFlag">
+        <el-select v-model="filters.disableFlag" placeholder="状态">
+          <el-option label="全部" value="" />
+          <el-option label="启用" value="false" />
+          <el-option label="禁用" value="true" />
+        </el-select>
+      </el-form-item>
       <el-form-item prop="listType">
-        <el-select v-model="filters.listType" placeholder="请选择列表样式">
+        <el-select v-model="filters.listType" placeholder="列表样式">
           <el-option label="全部" value="" />
           <el-option label="纯文字" value="0" />
           <el-option label="单图" value="3" />
@@ -20,11 +27,14 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="search()">快速查找</el-button>
-        <el-button @click="$refs['filters'].resetFields(),search()">重置</el-button>
+        <el-button @click="$refs['filters'].resetFields(), search()"
+          >重置</el-button
+        >
         <el-button
           type="primary"
           @click="$router.push('/article/createArticle')"
-        >添加</el-button>
+          >添加</el-button
+        >
       </el-form-item>
     </el-form>
     <el-table
@@ -45,6 +55,14 @@
             ]
         "
         min-width="80"
+      />
+      <el-table-column
+        prop="disableFlag"
+        label="禁用"
+        :formatter="
+          (row, column, cellValue) => ({ false: '否', true: '是' }[cellValue])
+        "
+        min-width="50"
       />
       <el-table-column prop="createDate" label="添加时间" width="200" />
       <el-table-column label="操作" width="150">
@@ -95,7 +113,7 @@ export default {
       ruleForm: {},
       filters: {
         title: "",
-        listType: ""
+        listType: null
       }
     };
   },

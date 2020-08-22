@@ -29,8 +29,9 @@
 import Quill from "quill";
 import { quillEditor } from "vue-quill-editor";
 import { getToken } from "@/utils/auth";
-const fontSizeStyle = Quill.import("attributors/style/size");
+
 const Delta = Quill.import("delta");
+
 var Link = Quill.import("formats/link");
 
 class MyLink extends Link {
@@ -43,6 +44,8 @@ class MyLink extends Link {
     return node;
   }
 }
+
+const fontSizeStyle = Quill.import("attributors/style/size");
 Quill.register(MyLink);
 
 var Video = Quill.import("formats/video");
