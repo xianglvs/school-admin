@@ -131,6 +131,28 @@ export const asyncRoutes = [
       }
     ]
   },
+  {
+    path: "/role",
+    component: Layout,
+    name: "role",
+    redirect: "/role/roleList",
+    meta: {
+      title: "角色管理",
+      icon: "form"
+    },
+    children: [
+      {
+        path: "userList",
+        component: () => import("@/views/role/list/index"),
+        name: "roleList",
+        meta: {
+          title: "角色列表",
+          icon: "user",
+          keepAlive: true
+        }
+      }
+    ] 
+  },
   // {
   //   path: "/nested",
   //   component: Layout,

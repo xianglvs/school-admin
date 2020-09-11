@@ -1,18 +1,17 @@
 <template>
   <div>
-		<new-dialog
+    <new-dialog
       ref="dialog"
       :title="title"
-      @closeDialog="closeDialog"
       @submitDialog="submitUserForm"
     >
       <el-form
         ref="userForm"
+				v-if="user"
         class="dialog-form"
         label-width="80px"
         :rules="rules"
         :model="user"
-				v-if="user"
       >
         <el-form-item label="用户名" prop="loginName">
           <el-input v-model="user.loginName" placeholder="请输入用户名" />
@@ -74,7 +73,7 @@ export default {
 		}
 	},
 	components: {
-		NewDialog
+    NewDialog
 	},
 	data() {
 		return {
@@ -111,9 +110,6 @@ export default {
     }
 	},
 	methods: {
-		closeDialog() {
-      this.$refs["userForm"].resetFields();
-		},
 		showDialog() {
       this.$refs.dialog.handleShow();
     },
@@ -185,7 +181,7 @@ export default {
         }
       });
     }
-	}
+  }
 };
 </script>
 <style lang="scss" scoped>

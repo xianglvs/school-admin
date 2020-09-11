@@ -89,8 +89,8 @@
     <user-dialog
       ref="userDialog"
       :title="userDialogTitle"
-      :rolesList="rolesList"
-      :currentUser="currentUser"
+      :roles-list="rolesList"
+      :current-user="currentUser"
       @fetchData="fetchData"
     />
   </div>
@@ -166,6 +166,7 @@ export default {
         edit: "修改用户"
       };
       this.userDialogTitle = obj[type];
+      this.currentUser = {};
       this.$refs.userDialog.showDialog();
       if (type === "add") {
         this.currentUser = {
@@ -176,10 +177,10 @@ export default {
           qq: "",
           email: "",
           roles: []
-        }
+        };
       } else {
-        if (row && !row['roles']) row['roles'] = [];
-        this.currentUser = row
+        if (row && !row["roles"]) row["roles"] = [];
+        this.currentUser = row;
       }
     },
     del(index, row) {
@@ -199,7 +200,7 @@ export default {
           }
         });
       });
-    },
+    }
   }
 };
 </script>

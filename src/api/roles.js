@@ -7,3 +7,11 @@ export function getRolesList(params) {
     params
   });
 }
+
+export function getRolesPage(params) {
+  return request({
+    url: "/api/role/page",
+    method: "get",
+    params
+  });
+}
