@@ -3,6 +3,7 @@
     <new-dialog
       ref="dialog"
       :title="title"
+      @closeDialog="closeDialog"
       @submitDialog="submitUserForm"
     >
       <el-form
@@ -113,6 +114,10 @@ export default {
 		showDialog() {
       this.$refs.dialog.handleShow();
     },
+    closeDialog() {
+      this.$refs["userForm"].resetFields();
+      this.$emit("fetchData");
+    },
 		remoteMethod(query) {
       if (query !== "") {
         setTimeout(() => {
@@ -151,7 +156,6 @@ export default {
             type: "success"
           });
           this.$refs.dialog.handleClose();
-          this.closeDialog();
           this.$emit("fetchData");
         }
       });
@@ -176,7 +180,6 @@ export default {
             type: "success"
           });
           this.$refs.dialog.handleClose();
-          this.closeDialog();
           this.$emit("fetchData");
         }
       });

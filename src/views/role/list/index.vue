@@ -18,6 +18,7 @@
         <el-button @click="$refs['filters'].resetFields(),search()">重置</el-button>
         <el-button
           type="primary"
+          @click="showRoleDialog('add')"
         >添加</el-button>
       </el-form-item>
     </el-form>
@@ -29,9 +30,6 @@
     >
       <el-table-column prop="name" label="角色中文名" min-width="100" />
       <el-table-column prop="enName" label="角色英文名" min-width="100" />
-      <el-table-column prop="officeId" label="机构id" min-width="120" />
-      <el-table-column prop="parentId" label="父级id" min-width="120" />
-      <el-table-column prop="parentIds" label="父级索引" min-width="120" />
       <el-table-column label="操作" width="250">
         <template slot-scope="scope">
           <el-button
@@ -43,7 +41,7 @@
           </el-button>
           <el-button
             size="mini"
-            @click="showUserDialog('edit', scope.row)"
+            @click="showRoleDialog('edit', scope.row)"
           >
             编辑
           </el-button>
@@ -68,10 +66,19 @@
         @current-change="handleCurrentChange"
       />
     </el-col>
+
+    <role-dialog
+      ref="roleDialog"
+      :title="roleDialogTitle"
+      :current-role="currentRole"
+      @fetchData="fetchData"
+    />
   </div>
 </template>
 <script>
-import { getRolesPage } from "@/api/roles";
+import { getRolesPage, delRole } from "@/api/roles";
+import { getAllMenuList } from "@/api/menu";
+import RoleDialog from "@/views/role/list/components/roleDialog.vue"
 
 export default {
   name: "RoleList",
@@ -85,13 +92,32 @@ export default {
       total: 0,
       page: 1,
       pageSize: 10,
-      list: []
+      list: [],
+      roleDialogTitle: '添加角色',
+      currentRole: null,
+      menuList: []
     }
   },
+  components: {
+    RoleDialog
+  },
   created() {
+    this.fetchAllMenuList();
     this.fetchData();
   },
   methods: {
+    fetchAllMenuList() { // 获取菜单列表
+      const params = {
+        delFlag: false,
+        disableFlag: false
+      }
+      getAllMenuList(params).then(response => {
+        if (response.code == 0) {
+          this.menuList = response.data || [];
+          console.log(this.menuList)
+        }
+      })
+    },
     fetchData() {
       const params = {};
       params.pageNum = this.page;
@@ -114,8 +140,40 @@ export default {
       this.page = 1;
       this.fetchData();
     },
-    showUserDialog() {},
-    del() {}
+    showRoleDialog(type, row) {
+      const obj = {
+        add: "添加角色",
+        edit: "修改角色"
+      };
+      this.roleDialogTitle = obj[type];
+      if (type === "add") {
+        this.currentRole = {
+          name: "",
+          enName: ""
+        };
+      } else {
+        this.currentRole = row;
+      }
+      this.$refs.roleDialog.showDialog();
+    },
+    del(index, row) {
+      this.$confirm("此操作将永久删除该角色, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+        delRole({ id: row.id }).then(response => {
+          if (response.code === 0) {
+            this.$message({
+              message: "删除成功",
+              center: true,
+              type: "success"
+            });
+            this.fetchData();
+          }
+        });
+      });
+    }
   }
 }
 </script>
