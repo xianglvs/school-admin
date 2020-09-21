@@ -44,7 +44,7 @@ export default {
   watch: {
     currentRole: {
       handler(newVal, oldVal) {
-        this.role = newVal
+        this.role = newVal;
       },
       deep: true,
       immediate: true
@@ -59,15 +59,13 @@ export default {
       }
 		}
   },
-  created() {
-    console.log(this.currentRole, this.role)
-  },
 	methods: {
     showDialog() {
       this.$refs.dialog.handleShow();
     },
     closeDialog() {
       this.$refs["roleForm"].resetFields();
+      this.$emit("fetchData");
     },
     submitRoleForm() {
       this.$refs["roleForm"].validate(valid => {
