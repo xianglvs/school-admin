@@ -14,6 +14,16 @@
         />
       </el-form-item> -->
       <el-form-item>
+        <el-select v-model="filters.disableFlag" placeholder="请选择">
+          <el-option
+            v-for="item in disableFlagList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item>
         <el-button @click="search()">快速查找</el-button>
         <el-button @click="$refs['filters'].resetFields(),search()">重置</el-button>
         <el-button
@@ -30,6 +40,14 @@
     >
       <el-table-column prop="name" label="角色中文名" min-width="100" />
       <el-table-column prop="enName" label="角色英文名" min-width="100" />
+      <el-table-column
+        prop="disableFlag"
+        label="状态"
+        :formatter="
+          (row, column, cellValue) => ({ false: '启用', true: '禁用' }[cellValue])
+        "
+        min-width="50"
+      />
       <el-table-column label="操作" width="250">
         <template slot-scope="scope">
           <el-button
@@ -93,9 +111,24 @@ export default {
   name: "RoleList",
   data() {
     return {
+      disableFlagList: [
+        {
+          label: '全部',
+          value: ''
+        },
+        {
+          label: '启用',
+          value: 0
+        },
+        {
+          label: '禁用',
+          value: 1
+        }
+      ],
       filters: {
         name: "",
         // enName: ""
+        disableFlag: ''
       },
       listLoading: false,
       total: 0,
@@ -145,6 +178,7 @@ export default {
       params.pageNum = this.page;
       params.pageSize = this.pageSize;
       Object.assign(params, this.filters);
+      params.disableFlag === '' ? params.disableFlag === '': params.disableFlag = Boolean(params.disableFlag);
       this.listLoading = true;
       getRolesPage(params).then(response => {
         if (response.code == 0) {
@@ -174,7 +208,8 @@ export default {
       if (type === "add") {
         this.currentRole = {
           name: "",
-          enName: ""
+          enName: "",
+          disableFlag: true
         };
       } else {
         this.currentRole = row;

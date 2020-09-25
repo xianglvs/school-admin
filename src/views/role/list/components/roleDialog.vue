@@ -20,6 +20,11 @@
         <el-form-item label="角色英文名" prop="enName">
           <el-input v-model="role.enName" placeholder="请输入角色英文名" />
         </el-form-item>
+        <el-form-item label="状态">
+          <el-switch
+            v-model="role.disableFlag">
+          </el-switch>
+        </el-form-item>
       </el-form>
     </new-dialog>
 	</div>
@@ -83,7 +88,7 @@ export default {
     },
     add(role) {
       const params = {
-        disableFlag: true,
+        disableFlag: role.disableFlag,
         enName: role.enName,
         menuIds: [],
         name: role.name,
