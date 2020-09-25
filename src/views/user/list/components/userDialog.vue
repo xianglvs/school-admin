@@ -133,7 +133,7 @@ export default {
     rolesListChange(item) {
       this.$forceUpdate();
     },
-		submitUserForm() {
+    submitUserForm() {
       this.$refs["userForm"].validate(valid => {
         if (valid) {
           const params = Object.assign({}, this.user);

@@ -39,3 +39,10 @@ export function delRole(params) {
     params
   });
 }
+
+export function getRole(roleId) {
+  return request({
+    url: `/api/menu/role/${roleId}`,
+    method: "get"
+  });
+}

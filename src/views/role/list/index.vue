@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-form ref="filters" :inline="true" :model="filters">
-      <el-form-item class="form-item" prop="loginName">
+      <el-form-item class="form-item" prop="name">
         <el-input
           v-model="filters.name"
           placeholder="角色中文名"
@@ -36,6 +36,7 @@
             size="mini"
             type="warning"
             plain
+            @click="showMenuDialog(scope.row)"
           >
             选择菜单
           </el-button>
@@ -73,12 +74,20 @@
       :current-role="currentRole"
       @fetchData="fetchData"
     />
+    <menu-dialog
+      v-if="menuList.length > 0"
+      ref="menuDialog"
+      :menuList="menuList"
+      @fetchData="fetchData"
+    />
   </div>
 </template>
 <script>
 import { getRolesPage, delRole } from "@/api/roles";
 import { getAllMenuList } from "@/api/menu";
 import RoleDialog from "@/views/role/list/components/roleDialog.vue"
+import MenuDialog from "@/views/role/list/components/menuDialog.vue"
+import dataUtils from "@/utils/dataUtils";
 
 export default {
   name: "RoleList",
@@ -99,7 +108,8 @@ export default {
     }
   },
   components: {
-    RoleDialog
+    RoleDialog,
+    MenuDialog
   },
   created() {
     this.fetchAllMenuList();
@@ -113,13 +123,25 @@ export default {
       }
       getAllMenuList(params).then(response => {
         if (response.code == 0) {
-          this.menuList = response.data || [];
-          console.log(this.menuList)
+          let list = response.data || [];
+          let menuData = dataUtils.jsonToTree({
+            rootId: 0,
+            json: list,
+            idKey: 'id',
+            pidKey: 'parentId',
+            childKey: 'children',
+            keepChild: true,
+            validate: function(row) {
+              return true;
+            }
+          })
+          this.menuList = menuData
         }
       })
     },
     fetchData() {
       const params = {};
+      params.delFlag = false;
       params.pageNum = this.page;
       params.pageSize = this.pageSize;
       Object.assign(params, this.filters);
@@ -139,6 +161,9 @@ export default {
     search() {
       this.page = 1;
       this.fetchData();
+    },
+    showMenuDialog(row) {
+      if (this.$refs.menuDialog) this.$refs.menuDialog.showDialog(row.id);
     },
     showRoleDialog(type, row) {
       const obj = {
