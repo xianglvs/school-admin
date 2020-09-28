@@ -205,16 +205,16 @@ export default {
         edit: "修改角色"
       };
       this.roleDialogTitle = obj[type];
-      if (type === "add") {
-        this.currentRole = {
-          name: "",
-          enName: "",
-          disableFlag: true
-        };
-      } else {
-        this.currentRole = row;
-      }
+      type === "add" ? this.loadDialogData() : this.loadDialogData(row);
       this.$refs.roleDialog.showDialog();
+    },
+    loadDialogData(row) {
+      let defaultData = {
+        name: "",
+        enName: "",
+        disableFlag: false
+      };
+      this.currentRole = row || defaultData;
     },
     del(index, row) {
       this.$confirm("此操作将永久删除该角色, 是否继续?", "提示", {

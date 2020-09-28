@@ -121,6 +121,9 @@ export default {
       rolesList: []
     };
   },
+  activated() {
+    this.fetchRolesList();
+  },
   created() {
     this.fetchData();
     this.fetchRolesList();
@@ -156,7 +159,11 @@ export default {
       };
       getRolesList(params).then(response => {
         if (response.code == 0) {
-          this.rolesList = response.data || [];
+          // this.rolesList = response.data || [];
+          let list = response.data || [];
+          this.rolesList.splice(0, this.rolesList.length);
+          this.rolesList = list;
+          console.log(this.rolesList, 111111111);
         }
       });
     },
@@ -168,20 +175,19 @@ export default {
       this.userDialogTitle = obj[type];
       this.currentUser = {};
       this.$refs.userDialog.showDialog();
-      if (type === "add") {
-        this.currentUser = {
-          loginName: "",
-          name: "",
-          password: "",
-          phone: "",
-          qq: "",
-          email: "",
-          roles: []
-        };
-      } else {
-        if (row && !row["roles"]) row["roles"] = [];
-        this.currentUser = row;
-      }
+     type === "add" ? this.loadDialogData() : this.loadDialogData(row);
+    },
+    loadDialogData(row) {
+      let defaultData = {
+        loginName: "",
+        name: "",
+        password: "",
+        phone: "",
+        qq: "",
+        email: "",
+        roles: []
+      };
+      this.currentUser = row || defaultData;
     },
     del(index, row) {
       this.$confirm("此操作将永久删除该用户, 是否继续?", "提示", {

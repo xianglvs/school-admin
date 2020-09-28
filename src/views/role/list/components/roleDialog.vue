@@ -22,7 +22,9 @@
         </el-form-item>
         <el-form-item label="状态">
           <el-switch
-            v-model="role.disableFlag">
+            v-model="role.disableFlag"
+            active-text="禁用"
+            inactive-text="启用">
           </el-switch>
         </el-form-item>
       </el-form>

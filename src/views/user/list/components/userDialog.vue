@@ -83,7 +83,7 @@ export default {
 			user: this.currentUser,
       rules: {
         loginName: [{ required: true, message: "请输入用户名", trigger: "blur" }],
-        name: [{ required: false, message: "请输入姓名", trigger: "blur" }],
+        name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
         password: [{ required: false, validator: validPassword, trigger: "blur" }],
         phone: [{ required: true, validator: validPhone, trigger: "blur" }],
         qq: [{ required: false, validator: validQQ, trigger: "blur" }],
@@ -96,6 +96,7 @@ export default {
 	watch: {
 		rolesList: {
 			handler(newVal, oldVal) {
+        console.log(newVal, 'new')
 				this.newRolesList = newVal;
 				this.searchRolesList = newVal;
       },
