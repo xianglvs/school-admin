@@ -27,14 +27,13 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="search()">快速查找</el-button>
-        <el-button @click="$refs['filters'].resetFields(), search()"
-          >重置</el-button
-        >
+        <el-button
+          @click="$refs['filters'].resetFields(), search()"
+        >重置</el-button>
         <el-button
           type="primary"
           @click="$router.push('/article/createArticle')"
-          >添加</el-button
-        >
+        >添加</el-button>
       </el-form-item>
     </el-form>
     <el-table
