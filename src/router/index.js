@@ -116,7 +116,8 @@ export const asyncRoutes = [
     redirect: "/user/userList",
     meta: {
       title: "用户管理",
-      icon: "form"
+      icon: "form",
+      type: 1
     },
     children: [
       {
@@ -131,28 +132,28 @@ export const asyncRoutes = [
       }
     ]
   },
-  {
-    path: "/role",
-    component: Layout,
-    name: "role",
-    redirect: "/role/roleList",
-    meta: {
-      title: "角色管理",
-      icon: "form"
-    },
-    children: [
-      {
-        path: "userList",
-        component: () => import("@/views/role/list/index"),
-        name: "roleList",
-        meta: {
-          title: "角色列表",
-          icon: "user",
-          keepAlive: true
-        }
-      }
-    ] 
-  },
+  // {
+  //   path: "/role",
+  //   component: Layout,
+  //   name: "role",
+  //   redirect: "/role/roleList",
+  //   meta: {
+  //     title: "角色管理",
+  //     icon: "form"
+  //   },
+  //   children: [
+  //     {
+  //       path: "userList",
+  //       component: () => import("@/views/role/list/index"),
+  //       name: "roleList",
+  //       meta: {
+  //         title: "角色列表",
+  //         icon: "form",
+  //         keepAlive: true
+  //       }
+  //     }
+  //   ]
+  // },
   // {
   //   path: "/nested",
   //   component: Layout,

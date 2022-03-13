@@ -12,7 +12,7 @@
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <!-- <img :src="user.avatar+'?imageView2/1/w/80/h/80'" class="user-avatar"> -->
-          <span class="user-avatar">{{ user && user.name }}</span>
+          <span class="user-avatar">{{ user && user.loginName }}</span>
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">

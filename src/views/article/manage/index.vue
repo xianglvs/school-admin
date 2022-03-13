@@ -196,7 +196,6 @@ export default {
             center: true,
             type: "success"
           });
-          this.$emit("reLoadForm");
         }
         this.loading = false;
       });
@@ -220,9 +219,14 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 .mybutton {
   margin-top: 40px;
+}
+.quill-editor {
+  .ql-toolbar.ql-snow {
+    padding-bottom: 40px;
+  }
 }
 .form {
   padding: 50px 10px 50px 0;

@@ -8,10 +8,10 @@
         />
       </el-form-item>
       <el-form-item class="form-item" prop="type">
-        <el-select v-model="filters.type" placeholder="请选择用户角色">
-          <el-option label="全部" value="" />
-          <el-option label="系统" value="1" />
-          <el-option label="个人" value="2" />
+        <el-select v-model="filters.type" placeholder="请选择用户类型">
+          <el-option label="全部" value=""/>
+          <el-option label="个人" value="2"/>
+          <el-option label="系统" value="1"/>
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -20,7 +20,8 @@
         <el-button
           type="primary"
           @click="showUserDialog('add')"
-        >添加</el-button>
+        >添加
+        </el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -29,28 +30,17 @@
       highlight-current-row
       style="width: 100%;"
     >
-      <el-table-column prop="loginName" label="用户名" min-width="100" />
-      <el-table-column prop="name" label="姓名" min-width="100" />
-      <el-table-column prop="phone" label="手机号" min-width="120" />
-      <el-table-column prop="qq" label="QQ号" min-width="120" />
-      <el-table-column prop="email" label="邮箱" min-width="120" />
+      <el-table-column prop="loginName" label="用户名" min-width="100"/>
+      <el-table-column prop="name" label="姓名" min-width="100"/>
+      <el-table-column prop="phone" label="手机号" min-width="120"/>
+      <el-table-column prop="qq" label="QQ号" min-width="120"/>
+      <el-table-column prop="email" label="邮箱" min-width="120"/>
       <el-table-column
         prop="type"
         label="用户类型"
         :formatter="
           (row, column, cellValue) =>
-            ['系统', '个人'][
-              cellValue
-            ]
-        "
-        min-width="80"
-      />
-      <el-table-column
-        prop="roles"
-        label="用户角色"
-        :formatter="
-          (row, column, cellValue) =>
-            ['系统', '个人'][
+            ['','系统', '个人'][
               cellValue
             ]
         "
@@ -139,6 +129,11 @@ export default {
       getUserList(params).then(response => {
         if (response.code == 0) {
           this.list = response.data.list || [];
+          this.list.forEach((row) => {
+            if (row.roles != null && row.roles.length > 0) {
+              row.roles = row.roles[0];
+            }
+          });
           this.total = response.data.total || 0;
         }
         this.listLoading = false;
@@ -160,10 +155,9 @@ export default {
       getRolesList(params).then(response => {
         if (response.code == 0) {
           // this.rolesList = response.data || [];
-          let list = response.data || [];
+          const list = response.data || [];
           this.rolesList.splice(0, this.rolesList.length);
           this.rolesList = list;
-          console.log(this.rolesList, 111111111);
         }
       });
     },
@@ -172,21 +166,26 @@ export default {
         add: "添加用户",
         edit: "修改用户"
       };
+      const r = { ...row };
       this.userDialogTitle = obj[type];
       this.currentUser = {};
       this.$refs.userDialog.showDialog();
-     type === "add" ? this.loadDialogData() : this.loadDialogData(row);
+      type === "add" ? this.loadDialogData() : this.loadDialogData(r);
     },
     loadDialogData(row) {
-      let defaultData = {
+      const defaultData = {
         loginName: "",
         name: "",
         password: "",
         phone: "",
         qq: "",
         email: "",
+        type: 2,
         roles: []
       };
+      if (row) {
+        row.password = "";
+      }
       this.currentUser = row || defaultData;
     },
     del(index, row) {
@@ -211,10 +210,10 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.app-container{
-  .form-item{
+.app-container {
+  .form-item {
     width: 148px;
-    margin-right:10px;
+    margin-right: 10px;
   }
 }
 </style>

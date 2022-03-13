@@ -7,7 +7,7 @@
  * @returns {Boolean}
  */
 export function isExternal(path) {
-  return /^(https?:|mailto:|tel:)/.test(path)
+  return /^(https?:|mailto:|tel:)/.test(path);
 }
 
 /**
@@ -15,8 +15,7 @@ export function isExternal(path) {
  * @returns {Boolean}
  */
 export function validUsername(str) {
-  const valid_map = ["admin", "editor"]
-  return valid_map.indexOf(str.trim()) >= 0
+  return str != null && str.length > 0;
 }
 
 export function validPassword(rule, value, callback) {
@@ -30,7 +29,7 @@ export function validPassword(rule, value, callback) {
 
 export function validPhone(rule, value, callback) {
   if (!value) {
-    return callback(new Error("请输入手机号"));
+    callback();
   } else {
     const reg = /^1[3|4|5|7|8][0-9]\d{8}$/;
     if (reg.test(value)) {
@@ -42,6 +41,10 @@ export function validPhone(rule, value, callback) {
 }
 
 export function validQQ(rule, value, callback) {
+  if (!value) {
+    callback();
+    return;
+  }
   const reg = /^[1-9][0-9]{4,14}/;
   if (!reg.test(value) && value != "") {
     callback(new Error("请输入正确的QQ格式"));
@@ -51,6 +54,10 @@ export function validQQ(rule, value, callback) {
 }
 
 export function validEmail(rule, value, callback) {
+  if (!value) {
+    callback();
+    return;
+  }
   const reg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
   if (!reg.test(value) && value != "") {
     callback(new Error("请输入正确的邮箱格式"));

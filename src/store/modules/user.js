@@ -1,6 +1,7 @@
 import { login, getInfo } from "@/api/user";
 import { getToken, setToken, removeToken } from "@/utils/auth";
 import { resetRouter } from "@/router";
+import Vue from "vue";
 
 const state = {
   info: null
@@ -9,6 +10,7 @@ const state = {
 const mutations = {
   SET_INFO: (state, info) => {
     state.info = info;
+    Vue.set(state, "info", info);
   }
 };
 
