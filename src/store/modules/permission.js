@@ -34,7 +34,6 @@ export function filterAsyncRoutes(routes, userInfo) {
       res.push(tmp);
     }
   });
-  console.log(res);
   return res;
 }
 
