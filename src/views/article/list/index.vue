@@ -99,7 +99,7 @@
         min-width="80"
       />
       <el-table-column prop="createDate" label="添加时间" width="200"/>
-      <el-table-column fixed="right" label="操作" width="162">
+      <el-table-column fixed="right" label="操作" width="166">
         <template slot-scope="scope">
           <el-button
             size="mini"

@@ -57,6 +57,7 @@ class MyVideo extends Video {
     }
     return super.create(value);
   }
+
   static getVedio(value) {
     const node = document.createElement("div");
     node.innerHTML = value;
@@ -74,10 +75,12 @@ class MyVideo extends Video {
     }
     return false;
   }
+
   static sanitize(url) {
     return this.getVedio(url) || super.sanitize(url);
   }
 }
+
 Quill.register(MyVideo);
 
 fontSizeStyle.whitelist = [
@@ -160,7 +163,8 @@ export default {
     const quill = this.$refs.myQuillEditor.quill;
     // 添加预览功能
     const preview = document.querySelector(".ql-preview");
-    preview.innerHTML = '<a target="_blank" href="/"><svg t="1647105283705" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3405" width="100%" height="100%"><path d="M185.856 258.2016L117.3504 189.7984c-48.2816-48.2816 24.1152-120.6784 72.3968-72.3968l86.3744 86.3232A554.6496 554.6496 0 0 1 460.8 155.7504L460.8 153.6V102.4a51.2 51.2 0 1 1 102.4 0v53.3504c66.6624 5.7344 129.3312 22.4768 184.6272 47.9744l86.3744-86.3232a51.2 51.2 0 0 1 72.3968 72.3968l-68.4032 68.4032C921.088 322.56 972.8 411.6992 972.8 512c0 201.6768-208.9984 358.4-460.8 358.4s-460.8-156.7232-460.8-358.4c0-100.3008 51.712-189.44 134.656-253.7984zM512 768c200.6016 0 358.4-118.3232 358.4-256s-157.7984-256-358.4-256-358.4 118.3232-358.4 256 157.7984 256 358.4 256z m0-51.2a204.8 204.8 0 1 1 0-409.6 204.8 204.8 0 0 1 0 409.6z m0-102.4a102.4 102.4 0 1 0 0-204.8 102.4 102.4 0 0 0 0 204.8z" fill="#444" p-id="3406"></path></svg></a>';
+    const previewUrl = "/article/detail?id=" + window.location.href.substr(window.location.href.lastIndexOf("/") + 1);
+    preview.innerHTML = "<a target=\"_blank\" href=\"" + previewUrl + "\"><svg t=\"1647105283705\" class=\"icon\" viewBox=\"0 0 1024 1024\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" p-id=\"3405\" width=\"100%\" height=\"100%\"><path d=\"M185.856 258.2016L117.3504 189.7984c-48.2816-48.2816 24.1152-120.6784 72.3968-72.3968l86.3744 86.3232A554.6496 554.6496 0 0 1 460.8 155.7504L460.8 153.6V102.4a51.2 51.2 0 1 1 102.4 0v53.3504c66.6624 5.7344 129.3312 22.4768 184.6272 47.9744l86.3744-86.3232a51.2 51.2 0 0 1 72.3968 72.3968l-68.4032 68.4032C921.088 322.56 972.8 411.6992 972.8 512c0 201.6768-208.9984 358.4-460.8 358.4s-460.8-156.7232-460.8-358.4c0-100.3008 51.712-189.44 134.656-253.7984zM512 768c200.6016 0 358.4-118.3232 358.4-256s-157.7984-256-358.4-256-358.4 118.3232-358.4 256 157.7984 256 358.4 256z m0-51.2a204.8 204.8 0 1 1 0-409.6 204.8 204.8 0 0 1 0 409.6z m0-102.4a102.4 102.4 0 1 0 0-204.8 102.4 102.4 0 0 0 0 204.8z\" fill=\"#444\" p-id=\"3406\"></path></svg></a>";
     // 当工具栏中的图片图标被单击的时候
     quill.getModule("toolbar").addHandler("image", state => {
       if (state) {
@@ -292,11 +296,13 @@ export default {
 .ql-editor iframe {
   width: 100%;
 }
+
 .quill-editor .ql-editor ol li,
 .quill-editor .ql-editor ul li {
   margin: 0;
   padding: 0;
 }
+
 .ql-editor ol,
 .ql-editor ul {
   padding: 0 25px;
@@ -311,22 +317,27 @@ export default {
   font-size: 24px;
   margin: 0;
 }
+
 .ql-snow .ql-editor h2 {
   font-size: 22px;
   margin: 0;
 }
+
 .ql-snow .ql-editor h3 {
   font-size: 20px;
   margin: 0;
 }
+
 .ql-snow .ql-editor h4 {
   font-size: 16px;
   margin: 0;
 }
+
 .ql-snow .ql-editor h5 {
   font-size: 14px;
   margin: 0;
 }
+
 .ql-snow .ql-editor h6 {
   font-size: 12px;
   margin: 0;
@@ -340,18 +351,22 @@ export default {
   width: 100%;
   display: block;
 }
+
 .uploader {
   display: none;
 }
+
 .ql-editor {
   line-height: normal !important;
   box-sizing: border-box;
   height: 60vh;
 }
+
 .ql-editor p {
   font-size: 18px;
   margin: 0;
 }
+
 .ql-snow .ql-picker {
   line-height: 24px;
 }
@@ -375,6 +390,7 @@ export default {
 .ql-snow .ql-tooltip[data-mode="link"]::before {
   content: "请输入链接地址:";
 }
+
 .ql-snow .ql-tooltip.ql-editing a.ql-action::after {
   border-right: 0px;
   content: "保存";
@@ -398,6 +414,7 @@ export default {
 .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="24px"]::before {
   content: "极大";
 }
+
 .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="24px"]::before {
   font-size: 24px;
 }
@@ -406,6 +423,7 @@ export default {
 .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="22px"]::before {
   content: "特大";
 }
+
 .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="22px"]::before {
   font-size: 20px;
 }
@@ -414,6 +432,7 @@ export default {
 .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="20px"]::before {
   content: "较大";
 }
+
 .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="20px"]::before {
   font-size: 20px;
 }
@@ -422,6 +441,7 @@ export default {
 .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="18px"]::before {
   content: "正常";
 }
+
 .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="18px"]::before {
   font-size: 18px;
 }
@@ -430,20 +450,25 @@ export default {
 .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="16px"]::before {
   content: "较小";
 }
+
 .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="16px"]::before {
   font-size: 16px;
 }
+
 .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="14px"]::before,
 .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="14px"]::before {
   content: "小";
 }
+
 .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="14px"]::before {
   font-size: 14px;
 }
+
 .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="12px"]::before,
 .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="12px"]::before {
   content: "极小";
 }
+
 .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="12px"]::before {
   font-size: 12px;
 }
@@ -452,26 +477,32 @@ export default {
 .ql-snow .ql-picker.ql-header .ql-picker-item::before {
   content: "正常";
 }
+
 .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="1"]::before,
 .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="1"]::before {
   content: "巨大";
 }
+
 .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="2"]::before,
 .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="2"]::before {
   content: "特大";
 }
+
 .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="3"]::before,
 .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="3"]::before {
   content: "较大";
 }
+
 .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="4"]::before,
 .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="4"]::before {
   content: "较小";
 }
+
 .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="5"]::before,
 .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="5"]::before {
   content: "小";
 }
+
 .ql-snow .ql-picker.ql-header .ql-picker-label[data-value="6"]::before,
 .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="6"]::before {
   content: "标题6";
@@ -481,17 +512,21 @@ export default {
 .ql-snow .ql-picker.ql-font .ql-picker-item::before {
   content: "标准字体";
 }
+
 .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="serif"]::before,
 .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="serif"]::before {
   content: "衬线字体";
 }
+
 .ql-snow .ql-picker.ql-font .ql-picker-label[data-value="monospace"]::before,
 .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="monospace"]::before {
   content: "等宽字体";
 }
+
 .ql-clean {
   position: relative;
 }
+
 .ql-clean:hover::before {
   content: "清除字体样式";
   position: absolute;
@@ -509,6 +544,7 @@ export default {
 .ql-bold {
   position: relative;
 }
+
 .ql-bold:hover::before {
   content: "加粗";
   position: absolute;
@@ -522,9 +558,11 @@ export default {
   padding: 5px;
   background-color: #409eff;
 }
+
 .ql-italic {
   position: relative;
 }
+
 .ql-italic:hover::before {
   content: "斜体";
   position: absolute;
@@ -538,9 +576,11 @@ export default {
   padding: 5px;
   background-color: #409eff;
 }
+
 .ql-underline {
   position: relative;
 }
+
 .ql-underline:hover::before {
   content: "下划线";
   position: absolute;
@@ -558,6 +598,7 @@ export default {
 .ql-strike {
   position: relative;
 }
+
 .ql-strike:hover::before {
   content: "删除线";
   position: absolute;
@@ -575,6 +616,7 @@ export default {
 .ql-icon-picker {
   position: relative;
 }
+
 .ql-icon-picker:hover::before {
   content: "对齐方式";
   position: absolute;
@@ -590,9 +632,11 @@ export default {
   padding: 5px;
   background-color: #409eff;
 }
+
 .ql-blockquote {
   position: relative;
 }
+
 .ql-blockquote:hover::before {
   content: "引用段落";
   position: absolute;
@@ -608,9 +652,11 @@ export default {
   padding: 5px;
   background-color: #409eff;
 }
+
 .ql-indent[value="-1"] {
   position: relative;
 }
+
 .ql-indent[value="-1"]:hover::before {
   content: "缩进-";
   position: absolute;
@@ -624,9 +670,11 @@ export default {
   padding: 5px;
   background-color: #409eff;
 }
+
 .ql-indent[value="+1"] {
   position: relative;
 }
+
 .ql-indent[value="+1"]:hover::before {
   content: "缩进+";
   position: absolute;
@@ -640,9 +688,11 @@ export default {
   padding: 5px;
   background-color: #409eff;
 }
+
 .ql-list[value="ordered"] {
   position: relative;
 }
+
 .ql-list[value="ordered"]:hover::before {
   content: "有序列表";
   position: absolute;
@@ -656,9 +706,11 @@ export default {
   padding: 5px;
   background-color: #409eff;
 }
+
 .ql-list[value="bullet"] {
   position: relative;
 }
+
 .ql-list[value="bullet"]:hover::before {
   content: "无序列表";
   position: absolute;
@@ -676,6 +728,7 @@ export default {
 .ql-color {
   position: relative;
 }
+
 .ql-color:hover::before {
   content: "文字颜色";
   position: absolute;
@@ -695,6 +748,7 @@ export default {
 .ql-background {
   position: relative;
 }
+
 .ql-background:hover::before {
   content: "背景颜色";
   position: absolute;
@@ -710,9 +764,11 @@ export default {
   padding: 5px;
   background-color: #409eff;
 }
+
 .ql-header {
   position: relative;
 }
+
 .ql-header:hover::before {
   content: "文章标题";
   position: absolute;
@@ -728,9 +784,11 @@ export default {
   padding: 5px;
   background-color: #409eff;
 }
+
 .ql-size {
   position: relative;
 }
+
 .ql-size:hover::before {
   content: "字体大小";
   position: absolute;
@@ -746,9 +804,11 @@ export default {
   padding: 5px;
   background-color: #409eff;
 }
+
 .ql-direction {
   position: relative;
 }
+
 .ql-direction:hover::before {
   content: "文本方向";
   position: absolute;
@@ -764,9 +824,11 @@ export default {
   padding: 5px;
   background-color: #409eff;
 }
+
 .ql-script[value="sub"] {
   position: relative;
 }
+
 .ql-script[value="sub"]:hover::before {
   content: "下标";
   position: absolute;
@@ -782,9 +844,11 @@ export default {
   padding: 5px;
   background-color: #409eff;
 }
+
 .ql-script[value="super"] {
   position: relative;
 }
+
 .ql-script[value="super"]:hover::before {
   content: "上标";
   position: absolute;
@@ -800,9 +864,11 @@ export default {
   padding: 5px;
   background-color: #409eff;
 }
+
 .ql-link {
   position: relative;
 }
+
 .ql-link:hover::before {
   content: "超链接";
   position: absolute;
@@ -818,9 +884,11 @@ export default {
   padding: 5px;
   background-color: #409eff;
 }
+
 .ql-image {
   position: relative;
 }
+
 .ql-image:hover::before {
   content: "上传图片";
   position: absolute;
@@ -836,9 +904,11 @@ export default {
   padding: 5px;
   background-color: #409eff;
 }
+
 .ql-video {
   position: relative;
 }
+
 .ql-video:hover::before {
   content: "插入视频";
   position: absolute;
@@ -854,9 +924,11 @@ export default {
   padding: 5px;
   background-color: #409eff;
 }
+
 .ql-preview {
   position: relative;
 }
+
 .ql-preview:hover::before {
   content: "预览";
   position: absolute;
