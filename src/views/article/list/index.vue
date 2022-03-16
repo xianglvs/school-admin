@@ -10,8 +10,8 @@
         <vue-qr :autoColor="false" colorDark="#000" :text="codeText" :size="400" :margin="0"></vue-qr>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="showCode = false">取 消</el-button>
-        <el-button type="primary" @click="downloadCode">下 载</el-button>
+        <el-button @click="showCode = false">取　消</el-button>
+        <el-button type="primary" @click="downloadCode">下　载</el-button>
       </span>
     </el-dialog>
     <new-dialog
@@ -76,9 +76,20 @@
       highlight-current-row
       style="width: 100%;"
     >
-      <el-table-column prop="sort" label="序号" min-width="50"/>
+      <el-table-column prop="sort" label="序号" min-width="60"/>
       <el-table-column prop="title" label="标题" min-width="150"/>
-      <el-table-column prop="description" label="描述" min-width="200"/>
+      <el-table-column
+        prop="description"
+        label="描述"
+        min-width="200"
+        :formatter="
+          (row, column, cellValue) =>{
+            if(cellValue && cellValue.length > 20){
+              return cellValue.substr(0,20) + '......';
+            }
+          }
+        "
+      />
       <el-table-column
         prop="listType"
         label="列表样式"
@@ -99,7 +110,7 @@
         min-width="80"
       />
       <el-table-column prop="createDate" label="添加时间" width="200"/>
-      <el-table-column fixed="right" label="操作" width="166">
+      <el-table-column fixed="right" label="操作" width="130">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -117,13 +128,13 @@
             size="mini"
             @click="$router.push(`/article/editArticle/${scope.row.id}`)"
           >
-            编ㅤ辑
+            编　辑
           </el-button>
           <el-button
             size="mini"
             @click="del(scope.$index, scope.row)"
           >
-            删ㅤ除
+            删　除
           </el-button>
         </template>
       </el-table-column>
@@ -278,5 +289,6 @@ export default {
 
 .cell .el-button {
   margin: 0 0 5px 0;
+  padding: 7px 7px;
 }
 </style>
