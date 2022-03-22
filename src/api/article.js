@@ -36,3 +36,11 @@ export function delArticle(params) {
     params
   });
 }
+
+export function clearImages(data) {
+  return request({
+    url: "/api/file/clear",
+    method: "post",
+    data
+  });
+}

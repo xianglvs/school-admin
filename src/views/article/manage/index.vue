@@ -7,7 +7,7 @@
     :model="record"
   >
     <el-form-item label="标题：" prop="title">
-      <el-input v-model="record.title" />
+      <el-input v-model="record.title"/>
     </el-form-item>
     <el-form-item label="描述：">
       <el-input
@@ -17,15 +17,15 @@
       />
     </el-form-item>
     <el-form-item label="排序：" prop="sort">
-      <el-input-number v-model="record.sort" :min="0" :max="10000" />
+      <el-input-number v-model="record.sort" :min="0" :max="10000"/>
     </el-form-item>
     <el-form-item label="列表显示" prop="listType">
       <el-select v-model="record.listType" placeholder="请选择列表样式">
-        <el-option label="纯文字" value="0" />
-        <el-option label="单图" value="3" />
-        <el-option label="上文字下图" value="2" />
-        <el-option label="左文字右图" value="1" />
-        <el-option label="三图并排" value="4" />
+        <el-option label="纯文字" value="0"/>
+        <el-option label="单图" value="3"/>
+        <el-option label="上文字下图" value="2"/>
+        <el-option label="左文字右图" value="1"/>
+        <el-option label="三图并排" value="4"/>
       </el-select>
     </el-form-item>
     <el-form-item label="状态：" prop="disableFlag">
@@ -63,7 +63,7 @@
 <script>
 // import WangEditor from "@/components/WangEditor";
 import QuillEditor from "@/components/Quill";
-import { getDetail, updateArticle, addArticle } from "@/api/article";
+import { getDetail, updateArticle, addArticle, clearImages } from "@/api/article";
 
 export default {
   name: "ArticleEdit",
@@ -104,11 +104,11 @@ export default {
   },
   created() {
     this.$route.params.id &&
-      getDetail(this.$route.params.id).then(response => {
-        if (response.code == 0) {
-          this.record = response.data;
-        }
-      });
+    getDetail(this.$route.params.id).then(response => {
+      if (response.code == 0) {
+        this.record = response.data;
+      }
+    });
   },
   methods: {
     getListImage(content) {
@@ -172,6 +172,13 @@ export default {
       }
       this.record.content = val;
     },
+    clearServerImage(content) {
+      let clearList = this.getListImage(content);
+      clearList = clearList.map(src => {
+        return src.substr(src.lastIndexOf("/") + 1).split("!")[0];
+      });
+      clearImages(clearList);
+    },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -196,6 +203,7 @@ export default {
             center: true,
             type: "success"
           });
+          this.clearServerImage(params.content);
         }
         this.loading = false;
       });
@@ -210,6 +218,7 @@ export default {
             center: true,
             type: "success"
           });
+          this.clearServerImage(params.content);
         }
         setTimeout(() => {
           this.loading = false;
@@ -223,11 +232,13 @@ export default {
 .mybutton {
   margin-top: 40px;
 }
+
 .quill-editor {
   .ql-toolbar.ql-snow {
     padding-bottom: 40px;
   }
 }
+
 .form {
   padding: 50px 10px 50px 0;
   max-width: 530px;
