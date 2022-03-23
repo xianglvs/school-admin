@@ -1,6 +1,6 @@
 <template>
   <div id="QuillEditor">
-    <el-row v-loading="loadingImg">
+    <el-row class="editorWrap" v-loading="loadingImg">
       <quill-editor
         ref="myQuillEditor"
         v-model="content"
@@ -163,8 +163,14 @@ export default {
     const quill = this.$refs.myQuillEditor.quill;
     // 添加预览功能
     const preview = document.querySelector(".ql-preview");
-    const previewUrl = "/article/detail?id=" + window.location.href.substr(window.location.href.lastIndexOf("/") + 1);
-    preview.innerHTML = "<a target=\"_blank\" href=\"" + previewUrl + "\"><svg t=\"1647105283705\" class=\"icon\" viewBox=\"0 0 1024 1024\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" p-id=\"3405\" width=\"100%\" height=\"100%\"><path d=\"M185.856 258.2016L117.3504 189.7984c-48.2816-48.2816 24.1152-120.6784 72.3968-72.3968l86.3744 86.3232A554.6496 554.6496 0 0 1 460.8 155.7504L460.8 153.6V102.4a51.2 51.2 0 1 1 102.4 0v53.3504c66.6624 5.7344 129.3312 22.4768 184.6272 47.9744l86.3744-86.3232a51.2 51.2 0 0 1 72.3968 72.3968l-68.4032 68.4032C921.088 322.56 972.8 411.6992 972.8 512c0 201.6768-208.9984 358.4-460.8 358.4s-460.8-156.7232-460.8-358.4c0-100.3008 51.712-189.44 134.656-253.7984zM512 768c200.6016 0 358.4-118.3232 358.4-256s-157.7984-256-358.4-256-358.4 118.3232-358.4 256 157.7984 256 358.4 256z m0-51.2a204.8 204.8 0 1 1 0-409.6 204.8 204.8 0 0 1 0 409.6z m0-102.4a102.4 102.4 0 1 0 0-204.8 102.4 102.4 0 0 0 0 204.8z\" fill=\"#444\" p-id=\"3406\"></path></svg></a>";
+    preview.addEventListener("click", () => {
+      if (!document.fullscreenElement) {
+        document.querySelector("#QuillEditor").requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+    });
+    preview.innerHTML = "<svg t=\"1647105283705\" class=\"icon\" viewBox=\"0 0 1024 1024\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" p-id=\"3405\" width=\"100%\" height=\"100%\"><path d=\"M185.856 258.2016L117.3504 189.7984c-48.2816-48.2816 24.1152-120.6784 72.3968-72.3968l86.3744 86.3232A554.6496 554.6496 0 0 1 460.8 155.7504L460.8 153.6V102.4a51.2 51.2 0 1 1 102.4 0v53.3504c66.6624 5.7344 129.3312 22.4768 184.6272 47.9744l86.3744-86.3232a51.2 51.2 0 0 1 72.3968 72.3968l-68.4032 68.4032C921.088 322.56 972.8 411.6992 972.8 512c0 201.6768-208.9984 358.4-460.8 358.4s-460.8-156.7232-460.8-358.4c0-100.3008 51.712-189.44 134.656-253.7984zM512 768c200.6016 0 358.4-118.3232 358.4-256s-157.7984-256-358.4-256-358.4 118.3232-358.4 256 157.7984 256 358.4 256z m0-51.2a204.8 204.8 0 1 1 0-409.6 204.8 204.8 0 0 1 0 409.6z m0-102.4a102.4 102.4 0 1 0 0-204.8 102.4 102.4 0 0 0 0 204.8z\" fill=\"#444\" p-id=\"3406\"></path></svg>";
     // 当工具栏中的图片图标被单击的时候
     quill.getModule("toolbar").addHandler("image", state => {
       if (state) {
@@ -293,6 +299,15 @@ export default {
 </script>
 
 <style>
+:fullscreen {
+  background: #FFF;
+}
+
+#QuillEditor:fullscreen .editorWrap {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
 .ql-editor iframe {
   width: 100%;
 }
@@ -930,7 +945,7 @@ export default {
 }
 
 .ql-preview:hover::before {
-  content: "预览";
+  content: "全屏";
   position: absolute;
   color: #fff;
   top: -20px;

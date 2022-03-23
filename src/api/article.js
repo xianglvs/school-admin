@@ -37,10 +37,10 @@ export function delArticle(params) {
   });
 }
 
-export function clearImages(data) {
+export function setImageIds(data) {
   return request({
-    url: "/api/file/clear",
-    method: "post",
+    url: "/api/file/set/paths",
+    method: "put",
     data
   });
 }

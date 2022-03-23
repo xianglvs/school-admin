@@ -63,7 +63,7 @@
 <script>
 // import WangEditor from "@/components/WangEditor";
 import QuillEditor from "@/components/Quill";
-import { getDetail, updateArticle, addArticle, clearImages } from "@/api/article";
+import { getDetail, updateArticle, addArticle, setImageIds } from "@/api/article";
 
 export default {
   name: "ArticleEdit",
@@ -172,12 +172,12 @@ export default {
       }
       this.record.content = val;
     },
-    clearServerImage(content) {
-      let clearList = this.getListImage(content);
-      clearList = clearList.map(src => {
-        return src.substr(src.lastIndexOf("/") + 1).split("!")[0];
+    setImagesArticleId(id, content) {
+      let list = this.getListImage(content);
+      list = list.map(src => {
+        return src.split("!")[0].replace(process.env.VUE_APP_BASE_API, "");
       });
-      clearImages(clearList);
+      setImageIds({ articleId: id, imagePaths: list });
     },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
@@ -203,7 +203,7 @@ export default {
             center: true,
             type: "success"
           });
-          this.clearServerImage(params.content);
+          this.setImagesArticleId(params.id, params.content);
         }
         this.loading = false;
       });
@@ -218,7 +218,7 @@ export default {
             center: true,
             type: "success"
           });
-          this.clearServerImage(params.content);
+          this.setImagesArticleId(this.record.id, params.content);
         }
         setTimeout(() => {
           this.loading = false;
