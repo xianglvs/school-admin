@@ -44,10 +44,8 @@
     <el-form-item label="内容" prop="content">
       <quill-editor
         v-model="record.content"
-        @placeholder="
-          '请输入文章内容';
-
-        "
+        :preview="preview"
+        placeholder="请输入文章内容"
         @change="change"
       />
     </el-form-item>
@@ -63,7 +61,7 @@
 <script>
 // import WangEditor from "@/components/WangEditor";
 import QuillEditor from "@/components/Quill";
-import { getDetail, updateArticle, addArticle, setImageIds } from "@/api/article";
+import { getDetail, updateArticle, addArticle, setImageIds, addPreview } from "@/api/article";
 
 export default {
   name: "ArticleEdit",
@@ -111,6 +109,31 @@ export default {
     });
   },
   methods: {
+    preview(content) {
+      this.loading = true;
+      const params = { title: this.record.title || "未设置", content: content || "<p>未设置</p>" };
+      addPreview(params).then(res => {
+        if (res.code == 0) {
+          const key = res.data;
+          const iframe = document.createElement("iframe");
+          iframe.setAttribute("src", `/article/preview?key=${key}`);
+          iframe.setAttribute("class", "iframe-preview");
+          document.body.appendChild(iframe);
+          const close = document.createElement("div");
+          close.innerText = "退出";
+          close.setAttribute("class", "close-preview");
+          document.body.appendChild(close);
+          const app = document.querySelector("#app");
+          app.setAttribute("style", "display:none;");
+          close.addEventListener("click", () => {
+            document.body.removeChild(iframe);
+            document.body.removeChild(close);
+            app.removeAttribute("style");
+          });
+        }
+        this.loading = false;
+      });
+    },
     getListImage(content) {
       const div = document.createElement("div");
       div.innerHTML = content;
@@ -229,6 +252,33 @@ export default {
 };
 </script>
 <style lang="scss">
+.close-preview {
+  width: 50px;
+  height: 50px;
+  position: fixed;
+  z-index: 10001;
+  background-color: #000;
+  border-radius: 50%;
+  opacity: 0.5;
+  right: 1vw;
+  top: 1vh;
+  font-size: 14px;
+  text-align: center;
+  color: #FFF;
+  line-height: 50px;
+  cursor: pointer;
+}
+
+.iframe-preview {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #FFF;
+  z-index: 10000;
+}
+
 .mybutton {
   margin-top: 40px;
 }

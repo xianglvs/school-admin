@@ -332,9 +332,15 @@ export default {
 @import "~@/styles/variables.scss";
 @import "~@/styles/mixin.scss";
 
+@media screen and (max-device-width: 500px) {
+  .app-main .app-container .user-wrapper {
+    width: 100%;
+  }
+}
 .app-container {
   .user-wrapper {
-    width: 33%;
+    width: 40%;
+    min-width: 350px;
     padding: 20px;
     margin-bottom: 10px;
     background-color: #{$lightGray};
@@ -408,12 +414,5 @@ export default {
 
 .dialog-form {
   padding-right: 1.5vw;
-}
-</style>
-<style>
-@media screen and (max-width: 640px) {
-  .app-main .app-container .user-wrapper {
-    width: 100%;
-  }
 }
 </style>

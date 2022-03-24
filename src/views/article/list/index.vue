@@ -202,7 +202,7 @@ export default {
     },
     submitSortForm() {
       this.loading = true;
-      updateArticle({ id: this.currentRow.id, sort: this.sortForm.sort }).then(response => {
+      updateArticle({ id: this.currentRow.id, sort: this.sortForm.sort || 0 }).then(response => {
         if (response.code == 0) {
           this.$message({
             message: "修改成功",
@@ -273,6 +273,11 @@ export default {
 };
 </script>
 <style lang="scss">
+.el-message-box{
+  width: 80%;
+  max-width: 400px;
+  min-width: 340px;
+}
 .el-dialog {
   width: 28%;
   max-width: 400px;

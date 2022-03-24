@@ -29,6 +29,14 @@ export function addArticle(data) {
   });
 }
 
+export function addPreview(data) {
+  return request({
+    url: "/api/article/preview",
+    method: "post",
+    data
+  });
+}
+
 export function delArticle(params) {
   return request({
     url: "/api/article",
