@@ -129,7 +129,7 @@
             size="mini"
             @click="$router.push(`/article/editArticle/${scope.row.id}`)"
           >
-            编　d辑
+            编　辑
           </el-button>
           <el-button
             size="mini"
@@ -214,6 +214,7 @@ export default {
           center: true,
           type: "success"
         });
+        this.showCode = false;
       }
     },
     showSortDialog(row) {
