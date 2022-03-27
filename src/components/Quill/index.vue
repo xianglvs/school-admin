@@ -94,14 +94,14 @@ fontSizeStyle.whitelist = [
 ];
 Quill.register(fontSizeStyle, true);
 const toolbarOptions = [
-  ["bold", "italic", "underline", "strike"], // 加粗 斜体 下划线 删除线
+  [{ header: [5, 4, false, 3, 2, 1] }], // 标题
+  [{ size: fontSizeStyle.whitelist }], // 字体大小
   // [{ indent: "-1" }, { indent: "+1" }], // 缩进
   [{ align: [] }, { list: "ordered" }, { list: "bullet" }], // 对齐方式 有序、无序列表
   [{ color: [] }, { background: [] }], // 字体颜色、字体背景颜色
   [{ script: "sub" }, { script: "super" }], // 上标/下标
+  ["bold", "italic", "underline", "strike"], // 加粗 斜体 下划线 删除线
   ["clean"], // 清除文本格式
-  [{ header: [5, 4, false, 3, 2, 1] }], // 标题
-  [{ size: fontSizeStyle.whitelist }], // 字体大小
   // [{ direction: "rtl" },"blockquote",], // 文本方向
   // [{ header: 1 }, { header: 2 }], // 1、2 级标题
   // [{ font: [] }], // 字体种类
@@ -165,15 +165,30 @@ export default {
   created() {
   },
   mounted() {
-    const quill = this.$refs.myQuillEditor.quill;
+    const loadEditorHeight = () => {
+      const height = document.documentElement.clientHeight;
+      const eleHeight = document.querySelector(".ql-toolbar").offsetHeight;
+      document.querySelector(".ql-editor").style.height = height - eleHeight - 20;
+      document.querySelector(".ql-editor").setAttribute("style", `height:${height - eleHeight - 20}px`);
+    };
+    window.onresize = loadEditorHeight;
+    loadEditorHeight();
     // 添加全屏功能
     const fullscreen = document.querySelector(".ql-fullscreen");
     fullscreen.addEventListener("click", () => {
-      if (!document.fullscreenElement) {
-        document.querySelector("#QuillEditor").requestFullscreen();
+      const fullscreenNode = document.querySelector("#QuillEditor");
+      if (!fullscreenNode.classList.contains("fullscreen")) {
+        loadEditorHeight();
+        fullscreenNode.classList.add("fullscreen");
         fullscreen.innerHTML = "<svg t=\"1648105592192\" class=\"icon\" viewBox=\"0 0 1024 1024\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" p-id=\"1401\" width=\"100%\" height=\"100%\"><path d=\"M298.666667 631.466667H226.133333v-81.066667h217.6v204.8h-85.333333v-68.266667l-128 128L170.666667 759.466667l128-128z m422.4 0l128 128-59.733334 59.733333-128-128v68.266667h-85.333333V554.666667h217.6v81.066666h-72.533333zM298.666667 341.333333L187.733333 230.4 243.2 170.666667l115.2 115.2V217.6h85.333333v204.8H226.133333V341.333333H298.666667z m430.933333 0h64v81.066667h-217.6V217.6h85.333333v72.533333L780.8 170.666667l59.733333 59.733333L729.6 341.333333z\" fill=\"#444444\" p-id=\"1402\"></path></svg>";
+        this.$message({
+          duration: 1000,
+          message: "在次点击全屏按钮退出",
+          center: true,
+          type: "info"
+        });
       } else {
-        document.exitFullscreen();
+        fullscreenNode.classList.remove("fullscreen");
         fullscreen.innerHTML = "<svg t=\"1648105550224\" class=\"icon\" viewBox=\"0 0 1024 1024\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" p-id=\"1261\" width=\"100%\" height=\"100%\"><path d=\"M358.4 768H426.666667v85.333333H213.333333v-213.333333h85.333334v68.266667l128-128 59.733333 59.733333-128 128z m345.6 0l-128-128 59.733333-59.733333 132.266667 132.266666V640h85.333333v213.333333h-213.333333v-85.333333h64zM358.4 298.666667l128 128-59.733333 59.733333-128-128V426.666667H213.333333V213.333333h213.333334v85.333334H358.4z m345.6 0H640V213.333333h213.333333v213.333334h-85.333333V354.133333l-132.266667 132.266667-59.733333-59.733333 128-128z\" fill=\"#444444\" p-id=\"1262\"></path></svg>";
       }
     });
@@ -185,6 +200,7 @@ export default {
     });
     preview.innerHTML = "<svg t=\"1647105283705\" class=\"icon\" viewBox=\"0 0 1024 1024\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" p-id=\"3405\" width=\"100%\" height=\"100%\"><path d=\"M185.856 258.2016L117.3504 189.7984c-48.2816-48.2816 24.1152-120.6784 72.3968-72.3968l86.3744 86.3232A554.6496 554.6496 0 0 1 460.8 155.7504L460.8 153.6V102.4a51.2 51.2 0 1 1 102.4 0v53.3504c66.6624 5.7344 129.3312 22.4768 184.6272 47.9744l86.3744-86.3232a51.2 51.2 0 0 1 72.3968 72.3968l-68.4032 68.4032C921.088 322.56 972.8 411.6992 972.8 512c0 201.6768-208.9984 358.4-460.8 358.4s-460.8-156.7232-460.8-358.4c0-100.3008 51.712-189.44 134.656-253.7984zM512 768c200.6016 0 358.4-118.3232 358.4-256s-157.7984-256-358.4-256-358.4 118.3232-358.4 256 157.7984 256 358.4 256z m0-51.2a204.8 204.8 0 1 1 0-409.6 204.8 204.8 0 0 1 0 409.6z m0-102.4a102.4 102.4 0 1 0 0-204.8 102.4 102.4 0 0 0 0 204.8z\" fill=\"#444\" p-id=\"3406\"></path></svg>";
 
+    const quill = this.$refs.myQuillEditor.quill;
     // 当工具栏中的图片图标被单击的时候
     quill.getModule("toolbar").addHandler("image", state => {
       if (state) {
@@ -313,18 +329,29 @@ export default {
 </script>
 
 <style>
-:fullscreen {
+#QuillEditor {
   background: #FFF;
 }
 
-#QuillEditor:fullscreen .editorWrap {
-  max-width: 600px;
-  margin: 0 auto 0 auto;
-  padding:10px 10px 0 10px;
+.fullscreen {
+  position: fixed;
+  left: 0;
+  top: 0;
+  margin: 0 auto;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1200;
+  background: #FFF;
 }
 
-#QuillEditor:fullscreen .ql-editor{
-  height:70vh;
+.editorWrap {
+  max-width: 600px;
+  margin: 0 auto 0 auto;
+  padding: 10px 10px 10px 10px;
+}
+
+#QuillEditor:fullscreen .ql-editor {
+  height: 80vh;
 }
 
 .ql-editor iframe {
@@ -393,7 +420,8 @@ export default {
 .ql-editor {
   line-height: normal !important;
   box-sizing: border-box;
-  height: 60vh;
+  height: 80vh;
+  padding-top: 70px;
 }
 
 .ql-editor p {
@@ -566,7 +594,7 @@ export default {
   position: absolute;
   color: #fff;
   top: -20px;
-  z-index: 1100;
+  z-index: 1300;
   font-size: 12px;
   display: inline-block;
   width: 85px;
@@ -999,7 +1027,7 @@ export default {
   background-color: #409eff;
 }
 
-#QuillEditor:fullscreen .ql-fullscreen:hover::before {
+#QuillEditor.fullscreen .ql-fullscreen:hover::before {
   content: "取消全屏";
   position: absolute;
   color: #fff;

@@ -2,24 +2,24 @@
   <el-form
     ref="form"
     class="form"
-    label-width="80px"
+    label-width="0"
     :rules="rules"
     :model="record"
   >
-    <el-form-item label="标题：" prop="title">
+    <el-form-item label="文章标题" prop="title">
       <el-input v-model="record.title"/>
     </el-form-item>
-    <el-form-item label="描述：">
+    <el-form-item label="首页显示文章描述">
       <el-input
         v-model="record.description"
         type="textarea"
         :autosize="{ minRows: 3, maxRows: 8 }"
       />
     </el-form-item>
-    <el-form-item label="排序：" prop="sort">
+    <el-form-item label="首页文章排序" prop="sort">
       <el-input-number v-model="record.sort" :min="0" :max="10000"/>
     </el-form-item>
-    <el-form-item label="列表显示" prop="listType">
+    <el-form-item label="首页列表显示类型" prop="listType">
       <el-select v-model="record.listType" placeholder="请选择列表样式">
         <el-option label="纯文字" value="0"/>
         <el-option label="单图" value="3"/>
@@ -28,7 +28,7 @@
         <el-option label="三图并排" value="4"/>
       </el-select>
     </el-form-item>
-    <el-form-item label="列表可见：" prop="disableFlag">
+    <el-form-item label="首页列表是否可见" prop="disableFlag">
       <el-radio-group v-model="record.disableFlag">
         <el-radio :label="false">是</el-radio>
         <el-radio :label="true">否</el-radio>
@@ -41,7 +41,7 @@
         @change="change"
       />
     </el-form-item> -->
-    <el-form-item label="内容" prop="content">
+    <el-form-item label="文章具体内容" prop="content">
       <quill-editor
         v-model="record.content"
         :preview="preview"
@@ -252,14 +252,18 @@ export default {
 };
 </script>
 <style lang="scss">
+.form{
+
+}
 .el-form-item__label{
   white-space: nowrap;
+  float: none;
 }
 .close-preview {
   width: 50px;
   height: 50px;
   position: fixed;
-  z-index: 10001;
+  z-index: 1001;
   background-color: #000;
   border-radius: 50%;
   opacity: 0.5;
@@ -279,7 +283,7 @@ export default {
   top: 0;
   left: 0;
   background-color: #FFF;
-  z-index: 10000;
+  z-index: 1000;
 }
 
 .mybutton {
@@ -288,12 +292,12 @@ export default {
 
 .quill-editor {
   .ql-toolbar.ql-snow {
-    padding-bottom: 40px;
+    padding-bottom: 0;
   }
 }
 
 .form {
-  padding: 50px 10px 50px 0;
+  padding: 50px 2vw;
   max-width: 530px;
   @media screen and (min-width: 650px) {
     padding: 50px 40px;
