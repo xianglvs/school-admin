@@ -319,7 +319,12 @@ export default {
 
 #QuillEditor:fullscreen .editorWrap {
   max-width: 600px;
-  margin: 0 auto;
+  margin: 0 auto 0 auto;
+  padding:10px 10px 0 10px;
+}
+
+#QuillEditor:fullscreen .ql-editor{
+  height:70vh;
 }
 
 .ql-editor iframe {

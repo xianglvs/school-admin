@@ -28,10 +28,10 @@
         <el-option label="三图并排" value="4"/>
       </el-select>
     </el-form-item>
-    <el-form-item label="状态：" prop="disableFlag">
+    <el-form-item label="列表可见：" prop="disableFlag">
       <el-radio-group v-model="record.disableFlag">
-        <el-radio :label="false">启用</el-radio>
-        <el-radio :label="true">禁用</el-radio>
+        <el-radio :label="false">是</el-radio>
+        <el-radio :label="true">否</el-radio>
       </el-radio-group>
     </el-form-item>
     <!-- <el-form-item label="内容：" prop="content">
@@ -252,6 +252,9 @@ export default {
 };
 </script>
 <style lang="scss">
+.el-form-item__label{
+  white-space: nowrap;
+}
 .close-preview {
   width: 50px;
   height: 50px;

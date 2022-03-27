@@ -10,8 +10,9 @@
         <vue-qr :autoColor="false" colorDark="#000" :text="codeText" :size="400" :margin="0"></vue-qr>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="showCode = false">取　消</el-button>
-        <el-button type="primary" @click="downloadCode">下　载</el-button>
+        <el-button @click="showCode = false">取消</el-button>
+        <el-button @click="copyAddress">复制链接</el-button>
+        <el-button type="primary" @click="downloadCode">下载</el-button>
       </span>
     </el-dialog>
     <new-dialog
@@ -39,10 +40,10 @@
         />
       </el-form-item>
       <el-form-item prop="disableFlag">
-        <el-select v-model="filters.disableFlag" placeholder="状态">
+        <el-select v-model="filters.disableFlag" placeholder="列表可见">
           <el-option label="全部" value=""/>
-          <el-option label="启用" value="false"/>
-          <el-option label="禁用" value="true"/>
+          <el-option label="是" value="false"/>
+          <el-option label="否" value="true"/>
         </el-select>
       </el-form-item>
       <el-form-item prop="listType">
@@ -103,9 +104,9 @@
       />
       <el-table-column
         prop="disableFlag"
-        label="禁用"
+        label="列表可见"
         :formatter="
-          (row, column, cellValue) => ({ false: '否', true: '是' }[cellValue])
+          (row, column, cellValue) => ({ false: '是', true: '否' }[cellValue])
         "
         min-width="80"
       />
@@ -128,7 +129,7 @@
             size="mini"
             @click="$router.push(`/article/editArticle/${scope.row.id}`)"
           >
-            编　辑
+            编　d辑
           </el-button>
           <el-button
             size="mini"
@@ -190,6 +191,31 @@ export default {
     this.fetchData(); // 这是我们获取数据的函数
   },
   methods: {
+    copyAddress() {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(this.codeText).then(() => {
+          this.$message({
+            message: "复制文章链接地址成功",
+            center: true,
+            type: "success"
+          });
+          this.showCode = false;
+        });
+      } else {
+        const input = document.createElement("input");
+        input.value = this.codeText;
+        document.body.appendChild(input);
+        input.select();
+        input.setSelectionRange(0, input.value.length);
+        document.execCommand("copy");
+        document.body.removeChild(input);
+        this.$message({
+          message: "复制文章链接地址成功",
+          center: true,
+          type: "success"
+        });
+      }
+    },
     showSortDialog(row) {
       this.currentRow = row;
       this.sortForm.sort = row.sort;
@@ -273,11 +299,12 @@ export default {
 };
 </script>
 <style lang="scss">
-.el-message-box{
+.el-message-box {
   width: 80%;
   max-width: 400px;
   min-width: 340px;
 }
+
 .el-dialog {
   width: 28%;
   max-width: 400px;
