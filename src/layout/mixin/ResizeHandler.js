@@ -21,7 +21,7 @@ export default {
     const isMobile = this.$_isMobile()
     if (isMobile) {
       store.dispatch('app/toggleDevice', 'mobile')
-      store.dispatch('app/closeSideBar', { withoutAnimation: true })
+      store.dispatch('app/toggleSideBar', { withoutAnimation: true })
     }
   },
   methods: {
@@ -37,7 +37,7 @@ export default {
         store.dispatch('app/toggleDevice', isMobile ? 'mobile' : 'desktop')
 
         if (isMobile) {
-          store.dispatch('app/closeSideBar', { withoutAnimation: true })
+          store.dispatch('app/toggleSideBar', { withoutAnimation: true })
         }
       }
     }
