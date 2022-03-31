@@ -67,6 +67,7 @@ service.interceptors.response.use(
             location.reload();
           });
         });
+        return;
       }
       Message({
         message: message || "Error",

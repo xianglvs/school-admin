@@ -7,19 +7,22 @@ export async function login(data) {
       method: "post",
       data
     });
-    if (res.code !== 0) {
-      return Promise.resolve(res);
-    }
-    const res1 = await request({
+    return res;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+export async function createOrFlushToken(data) {
+  try {
+    const res = await request({
       url: "/api/user/token",
       method: "post",
-      data: {
-        ticket: res.data.ticket
-      }
+      data
     });
-    return Promise.resolve(res1);
+    return res;
   } catch (e) {
-    return Promise.reject(e);
+    console.error(e);
   }
 }
 

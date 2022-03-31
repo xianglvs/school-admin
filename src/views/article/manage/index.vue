@@ -53,7 +53,7 @@
       <el-button :loading="loading" type="primary" @click="submitForm('form')">
         保存
       </el-button>
-      <el-button @click="$router.go(-1)">返回</el-button>
+      <el-button @click="goBack">返回</el-button>
     </el-form-item>
   </el-form>
 </template>
@@ -62,6 +62,8 @@
 // import WangEditor from "@/components/WangEditor";
 import QuillEditor from "@/components/Quill";
 import { getDetail, updateArticle, addArticle, setImageIds, addPreview } from "@/api/article";
+
+const contentKey = "editor_content";
 
 export default {
   name: "ArticleEdit",
@@ -78,6 +80,7 @@ export default {
       loading: false,
       record: {
         disableFlag: false,
+        content: localStorage.getItem(contentKey) || null,
         sort: 0,
         listType: "0"
       },
@@ -101,6 +104,7 @@ export default {
     };
   },
   created() {
+    this.autoSaveEditorContent();
     this.$route.params.id &&
     getDetail(this.$route.params.id).then(response => {
       if (response.code == 0) {
@@ -109,6 +113,18 @@ export default {
     });
   },
   methods: {
+    autoSaveEditorContent(index) {
+      const timer = setTimeout(() => {
+        localStorage.setItem(contentKey, this.record.content);
+      }, 10000);
+      this.$once("hook:beforeDestroy", () => {
+        clearInterval(timer);
+      });
+    },
+    goBack() {
+      localStorage.removeItem(contentKey);
+      this.$router.go(-1);
+    },
     preview(content) {
       this.loading = true;
       const params = { title: this.record.title || "未设置", content: content || "<p>未设置</p>" };
@@ -212,6 +228,7 @@ export default {
           } else {
             this.add(params);
           }
+          localStorage.removeItem(contentKey);
         } else {
           return false;
         }
@@ -252,13 +269,15 @@ export default {
 };
 </script>
 <style lang="scss">
-.form{
+.form {
 
 }
-.el-form-item__label{
+
+.el-form-item__label {
   white-space: nowrap;
   float: none;
 }
+
 .close-preview {
   width: 50px;
   height: 50px;

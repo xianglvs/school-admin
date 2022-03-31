@@ -1,5 +1,5 @@
-import { login, getInfo } from "@/api/user";
-import { getToken, setToken, removeToken } from "@/utils/auth";
+import { login, createOrFlushToken, getInfo } from "@/api/user";
+import { getToken, setToken, removeToken, setTicket } from "@/utils/auth";
 import { resetRouter } from "@/router";
 import Vue from "vue";
 
@@ -16,22 +16,25 @@ const mutations = {
 
 const actions = {
   // user login
-  login({ commit }, userInfo) {
-    const { username, password } = userInfo;
-    return new Promise((resolve, reject) => {
-      login({
+  async login({ commit }, userInfo) {
+    try {
+      const { username, password } = userInfo;
+      const res = await login({
         username: username.trim(),
         password: password
-      })
-        .then(response => {
-          const { data } = response;
-          setToken(data.token);
-          resolve();
-        })
-        .catch(error => {
-          reject(error);
-        });
-    });
+      });
+      setTicket(res.data.ticket);
+      const { data } = await actions.createOrFlushToken({ commit }, { ticket: res.data.ticket });
+      return data;
+    } catch (e) {
+      console.error(e);
+    }
+  },
+
+  async createOrFlushToken({ commit }, params) {
+    const { data } = await createOrFlushToken({ ticket: params.ticket });
+    setToken(data.token);
+    return data;
   },
 
   // get user info
