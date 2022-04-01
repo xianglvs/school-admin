@@ -34,6 +34,12 @@
         <el-radio :label="true">否</el-radio>
       </el-radio-group>
     </el-form-item>
+    <el-form-item label="原图模式（上传图片时直接显示原图）" prop="originalImage">
+      <el-radio-group v-model="record.originalImage">
+        <el-radio :label="true">是</el-radio>
+        <el-radio :label="false">否</el-radio>
+      </el-radio-group>
+    </el-form-item>
     <!-- <el-form-item label="内容：" prop="content">
       <wang-editor
         v-model="record.content"
@@ -45,6 +51,7 @@
       <quill-editor
         v-model="record.content"
         :preview="preview"
+        :show-original-image="record.originalImage"
         placeholder="请输入文章内容"
         @change="change"
       />
@@ -82,6 +89,7 @@ export default {
         disableFlag: false,
         content: localStorage.getItem(contentKey) || "",
         sort: 0,
+        originalImage: false,
         listType: "0"
       },
       rules: {
@@ -92,6 +100,9 @@ export default {
         sort: [{ required: true, message: "不能为空", trigger: "blur" }],
         listType: [{ required: true, message: "不能为空", trigger: "change" }],
         disableFlag: [
+          { required: true, message: "必须选择", trigger: "change" }
+        ],
+        originalImage: [
           { required: true, message: "必须选择", trigger: "change" }
         ],
         content: [

@@ -123,6 +123,10 @@ export default {
       default: (content) => {
       }
     },
+    showOriginalImage: {
+      type: Boolean,
+      default: false
+    },
     value: {
       type: String,
       default: ""
@@ -250,13 +254,17 @@ export default {
             }
             this.uploadToServer(file, res => {
               const quill = this.$refs.myQuillEditor.quill;
-              var range = quill.getSelection();
+              const range = quill.getSelection();
+              let src = process.env.VUE_APP_BASE_API + res.data.path;
+              if (!this.showOriginalImage) {
+                src += `!t750x750.png`;
+              }
               if (range) {
                 //  在当前光标位置插入图片
                 quill.insertEmbed(
                   range.index,
                   "image",
-                  process.env.VUE_APP_BASE_API + res.data.path + `!t750x750.png`
+                  src
                 );
                 //  将光标移动到图片后面
                 quill.setSelection(range.index + 1);
@@ -305,11 +313,15 @@ export default {
       // 上传完成以后修改图片地址，回显到quill编辑器中
       const quill = this.$refs.myQuillEditor.quill;
       const length = quill.getSelection() ? quill.getSelection().index : 0;
+      let src = process.env.VUE_APP_BASE_API + res.data.path;
+      if (!this.showOriginalImage) {
+        src += `!t750x750.png`;
+      }
       // 插入图片
       quill.insertEmbed(
         length,
         "image",
-        process.env.VUE_APP_BASE_API + res.data.path + `!t750x750.png`
+        src
       );
       // 调整光标到最后
       quill.setSelection(length + 1);
