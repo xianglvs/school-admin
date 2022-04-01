@@ -80,7 +80,7 @@ export default {
       loading: false,
       record: {
         disableFlag: false,
-        content: localStorage.getItem(contentKey) || null,
+        content: localStorage.getItem(contentKey) || "",
         sort: 0,
         listType: "0"
       },
@@ -103,8 +103,10 @@ export default {
       }
     };
   },
-  created() {
+  mounted() {
     this.autoSaveEditorContent();
+  },
+  created() {
     this.$route.params.id &&
     getDetail(this.$route.params.id).then(response => {
       if (response.code == 0) {
@@ -271,6 +273,12 @@ export default {
 <style lang="scss">
 .form {
 
+}
+
+.ql-editor li:not(.ql-direction-rtl):before {
+  margin-left: inherit;
+  margin-right: inherit;
+  text-align: inherit;
 }
 
 .el-form-item__label {
