@@ -1,13 +1,13 @@
 <template>
   <el-form
     ref="form"
-    class="form"
+    class="form detail-form"
     label-width="0"
     :rules="rules"
     :model="record"
   >
     <el-form-item label="文章标题" prop="title">
-      <el-input v-model="record.title"/>
+      <el-input v-model="record.title" />
     </el-form-item>
     <el-form-item label="首页显示文章描述">
       <el-input
@@ -17,15 +17,15 @@
       />
     </el-form-item>
     <el-form-item label="首页文章排序" prop="sort">
-      <el-input-number v-model="record.sort" :min="0" :max="10000"/>
+      <el-input-number v-model="record.sort" :min="0" :max="10000" />
     </el-form-item>
     <el-form-item label="首页列表显示类型" prop="listType">
       <el-select v-model="record.listType" placeholder="请选择列表样式">
-        <el-option label="纯文字" value="0"/>
-        <el-option label="单图" value="3"/>
-        <el-option label="上文字下图" value="2"/>
-        <el-option label="左文字右图" value="1"/>
-        <el-option label="三图并排" value="4"/>
+        <el-option label="纯文字" value="0" />
+        <el-option label="单图" value="3" />
+        <el-option label="上文字下图" value="2" />
+        <el-option label="左文字右图" value="1" />
+        <el-option label="三图并排" value="4" />
       </el-select>
     </el-form-item>
     <el-form-item label="首页列表是否可见" prop="disableFlag">
@@ -70,8 +70,6 @@
 import QuillEditor from "@/components/Quill";
 import { getDetail, updateArticle, addArticle, setImageIds, addPreview } from "@/api/article";
 
-const contentKey = "editor_content";
-
 export default {
   name: "ArticleEdit",
   components: { QuillEditor },
@@ -87,7 +85,7 @@ export default {
       loading: false,
       record: {
         disableFlag: false,
-        content: localStorage.getItem(contentKey) || "",
+        content: "",
         sort: 0,
         originalImage: false,
         listType: "0"
@@ -127,15 +125,8 @@ export default {
   },
   methods: {
     autoSaveEditorContent(index) {
-      const timer = setTimeout(() => {
-        localStorage.setItem(contentKey, this.record.content);
-      }, 10000);
-      this.$once("hook:beforeDestroy", () => {
-        clearInterval(timer);
-      });
     },
     goBack() {
-      localStorage.removeItem(contentKey);
       this.$router.go(-1);
     },
     preview(content) {
@@ -241,7 +232,6 @@ export default {
           } else {
             this.add(params);
           }
-          localStorage.removeItem(contentKey);
         } else {
           return false;
         }
@@ -292,7 +282,7 @@ export default {
   text-align: inherit;
 }
 
-.el-form-item__label {
+.detail-form .el-form-item__label {
   white-space: nowrap;
   float: none;
 }

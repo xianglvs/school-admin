@@ -1,12 +1,12 @@
 <template>
   <div :class="classObj" class="app-wrapper">
-    <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside"/>
-    <sidebar class="sidebar-container"/>
+    <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
+    <sidebar class="sidebar-container" />
     <div class="main-container">
       <div :class="{'fixed-header':fixedHeader}">
-        <navbar/>
+        <navbar />
       </div>
-      <app-main/>
+      <app-main />
     </div>
   </div>
 </template>
@@ -24,14 +24,6 @@ export default {
     AppMain
   },
   mixins: [ResizeMixin],
-  created() {
-    window.setInterval(() => {
-      const ticket = getTicket();
-      if (ticket) {
-        this.$store.dispatch("user/createOrFlushToken", { ticket });
-      }
-    }, 1000 * 60 * 10);
-  },
   computed: {
     sidebar() {
       return this.$store.state.app.sidebar;
@@ -50,6 +42,8 @@ export default {
         mobile: this.device === "mobile"
       };
     }
+  },
+  created() {
   },
   methods: {
     handleClickOutside() {

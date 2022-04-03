@@ -1,5 +1,5 @@
 import { login, createOrFlushToken, getInfo } from "@/api/user";
-import { getToken, setToken, removeToken, setTicket } from "@/utils/auth";
+import { getToken, setToken, removeToken, setTicket, removeTicket } from "@/utils/auth";
 import { resetRouter } from "@/router";
 import Vue from "vue";
 
@@ -56,6 +56,7 @@ const actions = {
   logout({ commit, state }) {
     commit("SET_INFO", null);
     removeToken();
+    removeTicket();
     resetRouter();
     return Promise.resolve();
   }

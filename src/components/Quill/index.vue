@@ -1,6 +1,6 @@
 <template>
   <div id="QuillEditor">
-    <el-row class="editorWrap" v-loading="loadingImg">
+    <el-row v-loading="loadingImg" class="editorWrap">
       <quill-editor
         ref="myQuillEditor"
         v-model="content"
@@ -28,7 +28,8 @@
 <script>
 import Quill from "quill";
 import { quillEditor } from "vue-quill-editor";
-import { getToken } from "@/utils/auth";
+import { getToken, getTicket } from "@/utils/auth";
+import { MessageBox } from "element-ui";
 
 const Delta = Quill.import("delta");
 
@@ -147,7 +148,7 @@ export default {
       initEvent: false,
       updateParams: {},
       headers: {
-        token: getToken()
+        token: ""
       },
       editorOption: {
         placeholder: this.placeholder ? this.placeholder : "输入内容",
@@ -167,6 +168,17 @@ export default {
     }
   },
   created() {
+    const token = getToken();
+    if (!token) {
+      const ticket = getTicket();
+      if (ticket) {
+        this.$store.dispatch("user/createOrFlushToken", { ticket }).then(() => {
+          this.header = {
+            token: getToken()
+          };
+        });
+      }
+    }
   },
   mounted() {
     const loadEditorHeight = () => {
@@ -232,6 +244,7 @@ export default {
       if (!this.initEvent) {
         return delta;
       }
+      console.log(delta);
       // delta.forEach(ele => {
       //   ele.insert.image = "http://www.baidu.com";
       // });
@@ -278,12 +291,51 @@ export default {
     );
   },
   methods: {
-    uploadToServer(file, callback) {
+    async getUrlBase64(url) {
+      return new Promise((resovle, reject) => {
+        const canvas = document.createElement("canvas"); // 创建canvas DOM元素
+        const ctx = canvas.getContext("2d");
+        const img = new Image();
+        img.crossOrigin = "Anonymous"; // 支持跨域
+        img.src = url;
+        img.onload = function() {
+          canvas.height = img.height; // 指定画板的高度,自定义
+          canvas.width = img.width; // 指定画板的宽度，自定义
+          ctx.drawImage(img, 0, 0); // 参数可自定义
+          const dataURL = canvas.toDataURL("image/" + url.sustr(url.lastIndexOf(".") + 1)); // 传递的自定义的参数
+          resovle(dataURL);
+        };
+      });
+    },
+    async uploadToServer(file, callback) {
+      let token = getToken();
+      if (!token) {
+        const ticket = getTicket();
+        if (ticket) {
+          this.$store.dispatch("user/createOrFlushToken", { ticket }).then(() => {
+            token = getToken();
+            this.header = {
+              token: getToken()
+            };
+          });
+        } else {
+          MessageBox.confirm("你登录已失效,是否留在当前页面?", "确认登出", {
+            confirmButtonText: "重新登录",
+            cancelButtonText: "放弃",
+            type: "warning"
+          }).then(() => {
+            this.$store.dispatch("user/logout").then(() => {
+              location.reload();
+            });
+          });
+          return;
+        }
+      }
       this.loadingImg = true;
       var xhr = new XMLHttpRequest();
       var formData = new FormData();
       formData.append("file", file);
-      formData.append("token", getToken());
+      formData.append("token", token);
       xhr.open("post", this.url);
       xhr.withCredentials = true;
       xhr.responseType = "json";
@@ -303,9 +355,28 @@ export default {
       this.initEvent = true;
       this.$emit("change", this.content);
     },
-    beforeUpload(request, file) {
+    async beforeUpload(request, file) {
+      const token = getToken();
+      if (!token) {
+        const ticket = getTicket();
+        if (ticket) {
+          await this.$store.dispatch("user/createOrFlushToken", { ticket });
+        } else {
+          MessageBox.confirm("你登录已失效,是否留在当前页面?", "确认登出", {
+            confirmButtonText: "重新登录",
+            cancelButtonText: "放弃",
+            type: "warning"
+          }).then(() => {
+            this.$store.dispatch("user/logout").then(() => {
+              location.reload();
+            });
+          });
+          return;
+        }
+      }
       // 设置上传参数
       this.updateParams.token = getToken();
+      this.headers = { token: getToken() };
       this.loadingImg = true;
     },
     // 上传图片成功
